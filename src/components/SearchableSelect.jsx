@@ -28,7 +28,7 @@ export default function SearchableSelect({ items, value, onChange, label, isDark
                     <label className={`block text-[14px] font-semibold cursor-help ${isDarkMode ? 'text-[#ffffff]' : 'text-[#201f1e]'}`}>{label}</label>
                     <HelpCircle className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`} />
                 </div>
-                <div onClick={() => setIsOpen(!isOpen)} className={`flex items-center justify-between px-3 h-[32px] cursor-pointer transition-all border rounded text-[14px] ${isDarkMode ? 'bg-[#252423]' : 'bg-white'} ${isOpen ? 'border-b-2 border-b-[#0078d4] border-x-transparent border-t-transparent' : isDarkMode ? 'border-[#605e5c] hover:border-[#8a8886]' : 'border-[#8a8886] hover:border-[#201f1e]'}`}>
+                <div onClick={() => setIsOpen(!isOpen)} className={`flex items-center justify-between px-3 h-[32px] cursor-pointer transition-all border rounded text-[14px] ${isDarkMode ? 'bg-[#1b1a19]' : 'bg-white'} ${isOpen ? 'border-b-2 border-b-[#0078d4] border-x-transparent border-t-transparent' : isDarkMode ? 'border-[#605e5c] hover:border-[#8a8886]' : 'border-[#8a8886] hover:border-[#201f1e]'}`}>
                     <div className="flex items-center gap-2 truncate">
                         <span className={isDarkMode ? 'text-white' : 'text-[#201f1e]'}>{selectedItem?.label}</span>
                         {selectedItem?.abbrev && <span className={`text-[12px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>({selectedItem.abbrev})</span>}
@@ -38,9 +38,9 @@ export default function SearchableSelect({ items, value, onChange, label, isDark
             </Tooltip>
 
             {isOpen && (
-                <div className={`absolute top-[100%] left-0 right-0 z-[100] shadow-lg border rounded-b-sm overflow-hidden mt-1 ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                <div className={`absolute top-[100%] left-0 right-0 z-[100] shadow-lg border rounded overflow-hidden mt-1 ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                     <div className="p-2 border-b border-opacity-10 border-current">
-                        <input autoFocus type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={placeholder} className={`w-full px-2 py-1 text-[14px] border-b outline-none bg-transparent ${isDarkMode ? 'text-white border-gray-600' : 'text-[#201f1e] border-gray-300'}`} />
+                        <input autoFocus type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={placeholder} className={`w-full px-2 py-1.5 text-[14px] border-b outline-none bg-transparent ${isDarkMode ? 'text-white border-[#484644] placeholder:text-[#605e5c]' : 'text-[#201f1e] border-[#edebe9] placeholder:text-[#a19f9d]'}`} />
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
                         {filteredItems.map((item, idx) => {

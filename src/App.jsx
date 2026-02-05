@@ -11,7 +11,7 @@ export default function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isConfigMinimized, setIsConfigMinimized] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
-    const [workload, setWorkload] = useState('webapp');
+    const [workload, setWorkload] = useState('app');
     const [envValue, setEnvValue] = useState('prod');
     const [regionValue, setRegionValue] = useState('uksouth');
     const [instance, setInstance] = useState('001');
@@ -114,7 +114,19 @@ export default function App() {
         document.body.removeChild(textArea);
     };
 
-    const liveSchemaStr = generateName({ abbrev: 'res' });
+    // Generate the schema pattern (shows placeholders like {resource}-{workload}-{env}-{region}-{instance})
+    const liveSchemaStr = useMemo(() => {
+        let parts = [];
+        namingOrder.forEach(part => {
+            if (part === 'Org' && showOrg) parts.push(orgPrefix || '{org}');
+            if (part === 'Resource') parts.push('{resource}');
+            if (part === 'Workload') parts.push(workload || '{workload}');
+            if (part === 'Environment') parts.push(envValue || '{env}');
+            if (part === 'Region') parts.push(currentRegion?.abbrev || '{region}');
+            if (part === 'Instance') parts.push(formattedInstance || '{instance}');
+        });
+        return parts.join('-');
+    }, [namingOrder, showOrg, orgPrefix, workload, envValue, currentRegion, formattedInstance]);
 
     return (
         <div className={`min-h-screen font-sans pb-24 transition-colors duration-200 ${isDarkMode ? 'bg-[#111009] text-white' : 'bg-[#faf9f8] text-[#201f1e]'}`}>
@@ -154,7 +166,7 @@ export default function App() {
                         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:max-w-xl">
                             <div className={`relative flex-1 w-full flex items-center px-2 h-[32px] border rounded ${isDarkMode ? 'bg-[#1b1a19] border-[#605e5c]' : 'bg-white border-[#8a8886]'}`}>
                                 <Search className="w-4 h-4 mr-2 text-[#0078d4]" />
-                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Filter services..." className={`w-full bg-transparent border-none outline-none text-[14px] ${isDarkMode ? 'text-white placeholder-[#c8c6c4]' : 'text-[#201f1e] placeholder-[#605e5c]'}`} />
+                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Filter services..." className={`w-full bg-transparent border-none outline-none text-[14px] ${isDarkMode ? 'text-white placeholder:text-[#605e5c]' : 'text-[#201f1e] placeholder:text-[#a19f9d]'}`} />
                                 {searchTerm && <button onClick={() => setSearchTerm('')} className="p-0.5 hover:bg-black/10 rounded-full"><X className={`w-3 h-3 ${isDarkMode ? 'text-white' : 'text-black'}`} /></button>}
                             </div>
                             <div className={`flex rounded overflow-hidden border ${isDarkMode ? 'border-[#605e5c]' : 'border-[#8a8886]'}`}>
@@ -167,7 +179,7 @@ export default function App() {
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 border-t pt-3" style={{ borderColor: isDarkMode ? '#484644' : '#edebe9' }}>
                         <Filter className={`w-3.5 h-3.5 mr-2 shrink-0 ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`} />
                         {CATEGORIES.map(cat => (
-                            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-3 py-1 text-[13px] rounded-full whitespace-nowrap border ${activeCategory === cat ? (isDarkMode ? 'bg-[#323130] border-[#323130] text-white font-semibold' : 'bg-[#f3f2f1] border-[#f3f2f1] text-[#201f1e] font-semibold') : (isDarkMode ? 'bg-transparent border-transparent text-[#c8c6c4] hover:bg-[#323130]' : 'bg-transparent border-transparent text-[#605e5c] hover:bg-[#f3f2f1]')}`}>{cat}</button>
+                            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-3 py-1 text-[13px] rounded-full whitespace-nowrap border transition-colors ${activeCategory === cat ? (isDarkMode ? 'bg-[#0078d4] border-[#0078d4] text-white font-semibold' : 'bg-[#0078d4] border-[#0078d4] text-white font-semibold') : (isDarkMode ? 'bg-transparent border-[#484644] text-[#c8c6c4] hover:bg-[#323130] hover:border-[#605e5c]' : 'bg-transparent border-[#edebe9] text-[#605e5c] hover:bg-[#f3f2f1] hover:border-[#c8c6c4]')}`}>{cat}</button>
                         ))}
                     </div>
                 </div>

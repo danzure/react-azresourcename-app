@@ -6,7 +6,7 @@ export default function Header({ isDarkMode, onToggleTheme }) {
             <span className="font-semibold text-[16px] text-white tracking-tight">Resource Naming Tool</span>
             <button
                 onClick={onToggleTheme}
-                className={`flex items-center gap-2 px-3 h-[32px] rounded-sm border transition-all text-[13px] font-semibold ${isDarkMode ? 'bg-[#323130] border-[#484644] text-white hover:bg-[#484644]' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+                className={`flex items-center gap-2 px-3 h-[32px] rounded border transition-all text-[13px] font-semibold ${isDarkMode ? 'bg-[#323130] border-[#484644] text-white hover:bg-[#484644]' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
             >
                 {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isDarkMode ? 'Light' : 'Dark'}</span>
