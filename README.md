@@ -1,0 +1,1 @@
+# azres-naming-tool
