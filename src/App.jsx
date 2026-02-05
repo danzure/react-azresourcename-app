@@ -59,24 +59,19 @@ export default function App() {
         const regAbbrev = currentRegion?.abbrev || 'uks';
         const suffix = formattedInstance;
 
-        if (['st', 'cr', 'as'].includes(resAbbrev)) {
-            let parts = [];
-            namingOrder.forEach(part => {
-                if (part === 'Org' && showOrg && cleanOrg) parts.push(cleanOrg);
-                if (part === 'Resource') parts.push(resAbbrev);
-                if (part === 'Workload') parts.push(cleanWorkload);
-                if (part === 'Environment') parts.push(envValue);
-                if (part === 'Region') parts.push(regAbbrev);
-                if (part === 'Instance') parts.push(suffix);
-            });
-            return parts.join('').toLowerCase();
-        }
+        // Check if resource allows hyphens based on chars field (look for standalone '-' in comma-separated list)
+        const charsList = resource.chars ? resource.chars.split(',').map(c => c.trim()) : [];
+        const allowsHyphens = charsList.includes('-');
+        // Check if resource only allows lowercase
+        const lowercaseOnly = resource.chars ? !resource.chars.includes('A-Z') : false;
 
+        // Special handling for Windows VM (15 char limit)
         if (resAbbrev === 'vmw') {
             const maxWorkload = 15 - 3 - 1 - 3 - 3;
             return `${resAbbrev}${cleanWorkload.substring(0, maxWorkload)}${envValue.substring(0, 1)}${regAbbrev.substring(0, 3)}${suffix}`.toLowerCase();
         }
 
+        // Build parts based on naming order
         let parts = [];
         namingOrder.forEach(part => {
             if (part === 'Org' && showOrg && cleanOrg) parts.push(cleanOrg);
@@ -86,7 +81,13 @@ export default function App() {
             if (part === 'Region') parts.push(regAbbrev);
             if (part === 'Instance') parts.push(suffix);
         });
-        return parts.join('-').toLowerCase();
+
+        // Join with or without hyphens based on resource constraints
+        const separator = allowsHyphens ? '-' : '';
+        let result = parts.join(separator);
+
+        // Apply case constraint
+        return lowercaseOnly ? result.toLowerCase() : result.toLowerCase();
     };
 
     const filteredResources = useMemo(() => {
