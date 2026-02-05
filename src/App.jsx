@@ -17,7 +17,7 @@ export default function App() {
     const [instance, setInstance] = useState('001');
     const [orgPrefix, setOrgPrefix] = useState('');
     const [namingOrder, setNamingOrder] = useState(['Org', 'Resource', 'Workload', 'Environment', 'Region', 'Instance']);
-    const [showOrg, setShowOrg] = useState(true);
+    const [showOrg, setShowOrg] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [copiedId, setCopiedId] = useState(null);
