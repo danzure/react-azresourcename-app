@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Search, X, LayoutGrid, List as ListIcon, Filter } from 'lucide-react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { Search, X, LayoutGrid, List as ListIcon, Filter, ArrowUp } from 'lucide-react';
 
 import Header from './components/Header';
 import ConfigPanel from './components/ConfigPanel';
@@ -23,6 +23,18 @@ export default function App() {
     const [copiedId, setCopiedId] = useState(null);
     const [expandedCard, setExpandedCard] = useState(null);
     const [subResourceSelections, setSubResourceSelections] = useState({}); // Track selected sub-resource per resource
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    // Scroll-to-top visibility
+    useEffect(() => {
+        const handleScroll = () => setShowScrollTop(window.scrollY > 200);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = useCallback(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
 
 
 
@@ -248,6 +260,17 @@ export default function App() {
                     Published by <a href="https://www.linkedin.com/in/danielpowley92/" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#0078d4] hover:underline">Daniel Powley</a> • <a href="https://github.com/danzure/azres-naming-tool" target="_blank" rel="noopener noreferrer" className="text-[#0078d4] hover:underline">GitHub</a> • Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" className="text-[#0078d4] hover:underline">MIT License</a>
                 </footer>
             </div>
+
+            {/* Scroll to Top Button */}
+            {showScrollTop && (
+                <button
+                    onClick={scrollToTop}
+                    aria-label="Scroll to top"
+                    className={`fixed bottom-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 z-50 ${isDarkMode ? 'bg-[#323130] text-white hover:bg-[#484644]' : 'bg-[#0078d4] text-white hover:bg-[#106ebe]'}`}
+                >
+                    <ArrowUp className="w-5 h-5" />
+                </button>
+            )}
         </div>
     );
 }
