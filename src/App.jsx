@@ -11,7 +11,7 @@ export default function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isConfigMinimized, setIsConfigMinimized] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
-    const [workload, setWorkload] = useState('app');
+    const [workload, setWorkload] = useState('');
     const [envValue, setEnvValue] = useState('prod');
     const [regionValue, setRegionValue] = useState('uksouth');
     const [instance, setInstance] = useState('001');
@@ -22,6 +22,7 @@ export default function App() {
     const [activeCategory, setActiveCategory] = useState('All');
     const [copiedId, setCopiedId] = useState(null);
     const [expandedCard, setExpandedCard] = useState(null);
+    const [subResourceSelections, setSubResourceSelections] = useState({}); // Track selected sub-resource per resource
 
 
 
@@ -43,8 +44,14 @@ export default function App() {
         if (val.length <= 3) setInstance(val);
     }, []);
 
-    const generateName = (resource) => {
-        const resAbbrev = resource.abbrev || "res";
+    const generateName = (resource, selectedSubResource = null) => {
+        let resAbbrev = resource.abbrev || "res";
+
+        // If resource has subResources and one is selected, append the suffix
+        if (resource.subResources && selectedSubResource) {
+            resAbbrev = `${resAbbrev}-${selectedSubResource}`;
+        }
+
         const cleanWorkload = workload.toLowerCase().replace(/[^a-z0-9]/g, '');
         const cleanOrg = orgPrefix.toLowerCase().replace(/[^a-z0-9]/g, '');
         const regAbbrev = currentRegion?.abbrev || 'uks';
@@ -113,6 +120,10 @@ export default function App() {
                 }
             }, 50);
         }
+    }, []);
+
+    const handleSubResourceChange = useCallback((resourceName, suffix) => {
+        setSubResourceSelections(prev => ({ ...prev, [resourceName]: suffix }));
     }, []);
 
     // Generate the schema pattern (shows placeholders like {resource}-{workload}-{env}-{region}-{instance})
@@ -188,7 +199,8 @@ export default function App() {
                 {/* Resource Grid/List */}
                 <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" : "flex flex-col gap-2"}>
                     {filteredResources.map((resource) => {
-                        const genName = generateName(resource);
+                        const selectedSubResource = subResourceSelections[resource.name] || (resource.subResources?.[0]?.suffix);
+                        const genName = generateName(resource, selectedSubResource);
                         const isCopied = copiedId === resource.name;
                         const isExpanded = expandedCard === resource.name;
                         const isTooLong = resource.maxLength && genName.length > resource.maxLength;
@@ -206,6 +218,8 @@ export default function App() {
                                     isDarkMode={isDarkMode}
                                     onCopy={(e) => copyToClipboard(genName, resource.name, e)}
                                     onToggle={() => handleCardToggle(resource.name, isExpanded)}
+                                    selectedSubResource={selectedSubResource}
+                                    onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
                                 />
                             );
                         }
@@ -222,6 +236,8 @@ export default function App() {
                                 isDarkMode={isDarkMode}
                                 onCopy={(e) => copyToClipboard(genName, resource.name, e)}
                                 onToggle={() => handleCardToggle(resource.name, isExpanded)}
+                                selectedSubResource={selectedSubResource}
+                                onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
                             />
                         );
                     })}

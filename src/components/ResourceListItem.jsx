@@ -3,7 +3,7 @@ import { Box, Copy, Check } from 'lucide-react';
 import ValidationHighlight from './ValidationHighlight';
 import ExpandedPanel from './ExpandedPanel';
 
-function ResourceListItem({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
+function ResourceListItem({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle, selectedSubResource, onSubResourceChange }) {
     return (
         <div id={id} className={`rounded border transition-all ${isExpanded ? `border-[#0078d4] ring-1 ring-[#0078d4]` : isDarkMode ? 'border-[#484644]' : 'border-[#edebe9]'}`}>
             <div
@@ -46,6 +46,8 @@ function ResourceListItem({ id, resource, genName, isCopied, isExpanded, isTooLo
                     isCopied={isCopied}
                     isDarkMode={isDarkMode}
                     onCopy={onCopy}
+                    selectedSubResource={selectedSubResource}
+                    onSubResourceChange={onSubResourceChange}
                 />
             )}
         </div>

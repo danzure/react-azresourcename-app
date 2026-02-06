@@ -1,7 +1,10 @@
 import { memo } from 'react';
-import { Copy, Check, BookOpen, Info } from 'lucide-react';
+import { Copy, Check, BookOpen, Info, ChevronDown } from 'lucide-react';
 
-function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy }) {
+function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, selectedSubResource, onSubResourceChange }) {
+    // Find the currently selected sub-resource details
+    const currentSubResource = resource.subResources?.find(sr => sr.suffix === selectedSubResource);
+
     return (
         <div onClick={(e) => e.stopPropagation()} className={`p-6 border-t cursor-default ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-[#faf9f8] border-[#edebe9]'}`}>
             {/* Header */}
@@ -15,6 +18,38 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy }) {
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                 </a>
             </div>
+
+            {/* Sub-resource Selector (only for resources with subResources) */}
+            {resource.subResources && resource.subResources.length > 0 && (
+                <div className={`mb-5 p-4 rounded border ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                        <svg className="w-4 h-4 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        <span className={`text-[12px] font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Target Service</span>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <div className="relative">
+                            <select
+                                value={selectedSubResource || ''}
+                                onChange={(e) => onSubResourceChange?.(e.target.value)}
+                                className={`w-full h-[36px] px-3 pr-8 rounded border appearance-none cursor-pointer text-[13px] font-medium ${isDarkMode ? 'bg-[#1b1a19] border-[#484644] text-white' : 'bg-[#faf9f8] border-[#edebe9] text-[#201f1e]'}`}
+                            >
+                                {resource.subResources.map((sr) => (
+                                    <option key={sr.suffix} value={sr.suffix}>{sr.label}</option>
+                                ))}
+                            </select>
+                            <ChevronDown className={`absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`} />
+                        </div>
+                        {currentSubResource?.dnsZone && (
+                            <div className={`text-[12px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>
+                                <span className="font-medium">Private DNS Zone:</span>{' '}
+                                <code className={`px-1.5 py-0.5 rounded font-mono text-[11px] ${isDarkMode ? 'bg-[#323130] text-[#60cdff]' : 'bg-[#f3f2f1] text-[#0078d4]'}`}>
+                                    {currentSubResource.dnsZone}
+                                </code>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -48,7 +83,9 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy }) {
                         </div>
                         <div className="flex items-center justify-between">
                             <span className={`text-[13px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Abbreviation</span>
-                            <code className={`text-[12px] px-2 py-0.5 rounded font-mono ${isDarkMode ? 'bg-[#323130] text-[#60cdff]' : 'bg-[#f3f2f1] text-[#0078d4]'}`}>{resource.abbrev}</code>
+                            <code className={`text-[12px] px-2 py-0.5 rounded font-mono ${isDarkMode ? 'bg-[#323130] text-[#60cdff]' : 'bg-[#f3f2f1] text-[#0078d4]'}`}>
+                                {resource.abbrev}{selectedSubResource ? `-${selectedSubResource}` : ''}
+                            </code>
                         </div>
                         <div className="flex items-center justify-between">
                             <span className={`text-[13px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Characters</span>
@@ -79,3 +116,4 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy }) {
 }
 
 export default memo(ExpandedPanel);
+

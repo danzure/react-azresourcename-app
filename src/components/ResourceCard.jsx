@@ -3,7 +3,7 @@ import { Box, Copy, Check, ShieldAlert } from 'lucide-react';
 import ValidationHighlight from './ValidationHighlight';
 import ExpandedPanel from './ExpandedPanel';
 
-function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
+function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle, selectedSubResource, onSubResourceChange }) {
     return (
         <div
             id={id}
@@ -54,6 +54,8 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
                     isCopied={isCopied}
                     isDarkMode={isDarkMode}
                     onCopy={onCopy}
+                    selectedSubResource={selectedSubResource}
+                    onSubResourceChange={onSubResourceChange}
                 />
             )}
         </div>
