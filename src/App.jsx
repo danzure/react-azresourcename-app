@@ -114,6 +114,21 @@ export default function App() {
         document.body.removeChild(textArea);
     };
 
+    const handleCardToggle = (resourceName, isCurrentlyExpanded) => {
+        if (isCurrentlyExpanded) {
+            setExpandedCard(null);
+        } else {
+            setExpandedCard(resourceName);
+            // Scroll to center the card after a brief delay to allow expansion
+            setTimeout(() => {
+                const element = document.getElementById(`resource-${resourceName}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 50);
+        }
+    };
+
     // Generate the schema pattern (shows placeholders like {resource}-{workload}-{env}-{region}-{instance})
     const liveSchemaStr = useMemo(() => {
         let parts = [];
@@ -196,6 +211,7 @@ export default function App() {
                             return (
                                 <ResourceListItem
                                     key={resource.name}
+                                    id={`resource-${resource.name}`}
                                     resource={resource}
                                     genName={genName}
                                     isCopied={isCopied}
@@ -203,7 +219,7 @@ export default function App() {
                                     isTooLong={isTooLong}
                                     isDarkMode={isDarkMode}
                                     onCopy={(e) => copyToClipboard(genName, resource.name, e)}
-                                    onToggle={() => setExpandedCard(isExpanded ? null : resource.name)}
+                                    onToggle={() => handleCardToggle(resource.name, isExpanded)}
                                 />
                             );
                         }
@@ -211,6 +227,7 @@ export default function App() {
                         return (
                             <ResourceCard
                                 key={resource.name}
+                                id={`resource-${resource.name}`}
                                 resource={resource}
                                 genName={genName}
                                 isCopied={isCopied}
@@ -218,7 +235,7 @@ export default function App() {
                                 isTooLong={isTooLong}
                                 isDarkMode={isDarkMode}
                                 onCopy={(e) => copyToClipboard(genName, resource.name, e)}
-                                onToggle={() => setExpandedCard(isExpanded ? null : resource.name)}
+                                onToggle={() => handleCardToggle(resource.name, isExpanded)}
                             />
                         );
                     })}

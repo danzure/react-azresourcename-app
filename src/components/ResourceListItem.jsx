@@ -1,9 +1,9 @@
 import { Box, Copy, Check, BookOpen, Info } from 'lucide-react';
 import ValidationHighlight from './ValidationHighlight';
 
-export default function ResourceListItem({ resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
+export default function ResourceListItem({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
     return (
-        <div className={`rounded border transition-all ${isExpanded ? `border-[#0078d4] ring-1 ring-[#0078d4]` : isDarkMode ? 'border-[#484644]' : 'border-[#edebe9]'}`}>
+        <div id={id} className={`rounded border transition-all ${isExpanded ? `border-[#0078d4] ring-1 ring-[#0078d4]` : isDarkMode ? 'border-[#484644]' : 'border-[#edebe9]'}`}>
             <div
                 onClick={onToggle}
                 className={`group flex items-center gap-4 px-4 py-3 cursor-pointer transition-all ${isExpanded ? (isDarkMode ? 'bg-[#252423]' : 'bg-white') : isDarkMode ? 'bg-[#252423] hover:bg-[#323130]' : 'bg-white hover:bg-[#f3f2f1]'}`}
@@ -97,8 +97,8 @@ export default function ResourceListItem({ resource, genName, isCopied, isExpand
                     <button
                         onClick={onCopy}
                         className={`mt-6 w-full h-[40px] rounded font-semibold text-[14px] flex items-center justify-center gap-2 transition-colors ${isCopied
-                                ? 'bg-[#107c10] text-white'
-                                : 'bg-[#0078d4] text-white hover:bg-[#106ebe] active:bg-[#005a9e]'
+                            ? 'bg-[#107c10] text-white'
+                            : 'bg-[#0078d4] text-white hover:bg-[#106ebe] active:bg-[#005a9e]'
                             }`}
                     >
                         {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

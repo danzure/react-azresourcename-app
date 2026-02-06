@@ -1,9 +1,10 @@
 import { Box, Copy, Check, ShieldAlert, BookOpen, Info } from 'lucide-react';
 import ValidationHighlight from './ValidationHighlight';
 
-export default function ResourceCard({ resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
+export default function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, isDarkMode, onCopy, onToggle }) {
     return (
         <div
+            id={id}
             onClick={onToggle}
             className={`group relative flex flex-col rounded border shadow-sm cursor-pointer transition-all duration-200 ${isExpanded ? 'col-span-full ring-2 ring-[#0078d4] z-10' : 'hover:shadow-md hover:border-[#0078d4]/30'} ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'} ${isTooLong ? 'border-l-4 border-l-[#a80000]' : ''}`}
         >
@@ -104,8 +105,8 @@ export default function ResourceCard({ resource, genName, isCopied, isExpanded, 
                     <button
                         onClick={onCopy}
                         className={`mt-6 w-full h-[40px] rounded font-semibold text-[14px] flex items-center justify-center gap-2 transition-colors ${isCopied
-                                ? 'bg-[#107c10] text-white'
-                                : 'bg-[#0078d4] text-white hover:bg-[#106ebe] active:bg-[#005a9e]'
+                            ? 'bg-[#107c10] text-white'
+                            : 'bg-[#0078d4] text-white hover:bg-[#106ebe] active:bg-[#005a9e]'
                             }`}
                     >
                         {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
