@@ -24,7 +24,7 @@ export default function ValidationHighlight({ name, allowedCharsPattern, isDarkM
             {name.split('').map((char, i) => {
                 const isValid = validator(char);
                 return (
-                    <span key={i} className={isValid ? '' : 'text-[#a80000] dark:text-[#f1707b] font-bold underline decoration-wavy'} title={isValid ? '' : `Invalid: '${char}'`}>
+                    <span key={i} className={isValid ? '' : `${isDarkMode ? 'text-[#f1707b]' : 'text-[#a80000]'} font-bold underline decoration-wavy`} title={isValid ? '' : `Invalid: '${char}'`}>
                         {char}
                     </span>
                 );
