@@ -1,4 +1,4 @@
-# Azure Resource Naming Tool
+# a-z-ure.namer
 
 A web application for generating consistent, compliant Azure resource names. Based on Microsoft's Cloud Adoption Framework (CAF), which provides best practices for naming and organizing Azure resources to improve governance, discoverability, and management at scale.
 
