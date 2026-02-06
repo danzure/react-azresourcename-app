@@ -47,6 +47,9 @@ export default function ConfigPanel({
                                 <Edit3 className="w-4 h-4 text-[#0078d4]" />
                                 <h3 className={`text-[14px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Pattern Builder</h3>
                             </div>
+                            <p className={`text-[12px] leading-relaxed ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>
+                                Build your naming pattern using the <a href="https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming" target="_blank" rel="noopener noreferrer" className="text-[#0078d4] hover:underline">Cloud Adoption Framework (CAF)</a> recommended format: <code className={`px-1 py-0.5 rounded text-[11px] ${isDarkMode ? 'bg-[#323130]' : 'bg-[#f3f2f1]'}`}>{'{resource}-{workload}-{env}-{region}-{instance}'}</code>. Reorder components to match your organization's standards.
+                            </p>
                             <div className="flex flex-col lg:flex-row gap-4 items-start">
                                 <div className="w-full lg:w-64 shrink-0 flex flex-col gap-2">
                                     <label className={`block text-[14px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Org Prefix</label>
