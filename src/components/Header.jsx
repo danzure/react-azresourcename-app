@@ -2,7 +2,7 @@ import { Moon, Sun } from 'lucide-react';
 
 export default function Header({ isDarkMode, onToggleTheme }) {
     return (
-        <header className={`h-[48px] flex items-center justify-between px-5 border-b z-50 fixed top-0 w-full ${isDarkMode ? 'bg-[#1b1a19] border-[#323130]' : 'bg-[#0078d4] border-transparent text-white'}`}>
+        <header className={`h-[48px] flex items-center justify-between px-5 border-b z-50 fixed top-0 w-full ${isDarkMode ? 'bg-[#1b1a19] border-[#323130]' : 'bg-primary-gradient border-transparent text-white shadow-soft'}`}>
             <span className="font-semibold text-[16px] text-white tracking-tight">a-z-ure.namer</span>
             <button
                 onClick={onToggleTheme}

@@ -103,9 +103,9 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
             <button
                 onClick={onCopy}
                 aria-label={isCopied ? 'Copied to clipboard' : 'Copy resource name'}
-                className={`mt-6 w-full h-[40px] rounded font-semibold text-[14px] flex items-center justify-center gap-2 transition-colors ${isCopied
+                className={`mt-6 w-full h-[40px] rounded font-semibold text-[14px] flex items-center justify-center gap-2 transition-all shadow-sm hover:shadow-md ${isCopied
                     ? 'bg-[#107c10] text-white'
-                    : 'bg-[#0078d4] text-white hover:bg-[#106ebe] active:bg-[#005a9e]'
+                    : 'bg-primary-gradient text-white hover:opacity-90 active:scale-[0.98]'
                     }`}
             >
                 {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

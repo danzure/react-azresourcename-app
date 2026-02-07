@@ -25,11 +25,11 @@ export default function ConfigPanel({
                 </div>
 
                 {!isMinimized && (
-                    <div className="animate-in slide-in-from-top-2 duration-200">
+                    <div className="animate-slide-up">
                         {/* Two-column grid: Parameters + About (reversed order on mobile) */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                             {/* About / CAF Introduction - shows first on mobile via order */}
-                            <div className={`order-1 lg:order-2 p-3 rounded border ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9] shadow-sm'}`}>
+                            <div className={`order-1 lg:order-2 p-3 rounded border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                                 <div className="flex items-center gap-2 mb-3">
                                     <Info className="w-3.5 h-3.5 text-[#0078d4]" />
                                     <h3 className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>About This Tool</h3>
@@ -50,7 +50,7 @@ export default function ConfigPanel({
                             </div>
 
                             {/* Parameters - shows second on mobile via order */}
-                            <div className={`order-2 lg:order-1 p-3 rounded border ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9] shadow-sm'}`}>
+                            <div className={`order-2 lg:order-1 p-3 rounded border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                                 <div className="flex items-center gap-2 mb-3">
                                     <Edit3 className="w-3.5 h-3.5 text-[#0078d4]" />
                                     <h3 className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Parameters</h3>
@@ -66,7 +66,7 @@ export default function ConfigPanel({
                                         value={workload}
                                         onChange={(e) => setWorkload(e.target.value)}
                                         placeholder="web"
-                                        className={`px-2.5 h-[28px] border rounded outline-none text-[13px] transition-colors focus:border-[#0078d4] ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
+                                        className={`px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
                                     />
                                     {/* Environment */}
                                     <Tooltip content="Lifecycle stage" isDarkMode={isDarkMode}>
@@ -88,7 +88,7 @@ export default function ConfigPanel({
                                         onChange={onInstanceChange}
                                         maxLength={3}
                                         placeholder="001"
-                                        className={`px-2.5 h-[28px] border rounded outline-none text-[13px] transition-colors focus:border-[#0078d4] ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
+                                        className={`px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
                                     />
                                     {/* Org Prefix */}
                                     <Tooltip content="Organisation prefix" isDarkMode={isDarkMode}>
@@ -101,7 +101,7 @@ export default function ConfigPanel({
                                             onChange={(e) => setOrgPrefix(e.target.value)}
                                             placeholder="Org"
                                             disabled={!showOrg}
-                                            className={`flex-1 px-2.5 h-[28px] border rounded outline-none text-[13px] transition-colors focus:border-[#0078d4] disabled:opacity-40 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
+                                            className={`flex-1 px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 disabled:opacity-40 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
                                         />
                                         <button
                                             onClick={() => setShowOrg(!showOrg)}

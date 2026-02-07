@@ -198,35 +198,38 @@ export default function App() {
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 border-t pt-3" style={{ borderColor: isDarkMode ? '#484644' : '#edebe9' }}>
                         <Filter className={`w-3.5 h-3.5 mr-2 shrink-0 ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`} />
                         {CATEGORIES.map(cat => (
-                            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-3 py-1 text-[13px] rounded-full whitespace-nowrap border transition-colors ${activeCategory === cat ? (isDarkMode ? 'bg-[#0078d4] border-[#0078d4] text-white font-semibold' : 'bg-[#0078d4] border-[#0078d4] text-white font-semibold') : (isDarkMode ? 'bg-transparent border-[#484644] text-[#c8c6c4] hover:bg-[#323130] hover:border-[#605e5c]' : 'bg-transparent border-[#edebe9] text-[#605e5c] hover:bg-[#f3f2f1] hover:border-[#c8c6c4]')}`}>{cat}</button>
+                            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-3 py-1 text-[13px] rounded-full whitespace-nowrap border transition-all ${activeCategory === cat ? (isDarkMode ? 'bg-primary-gradient border-transparent text-white font-semibold shadow-sm' : 'bg-primary-gradient border-transparent text-white font-semibold shadow-md') : (isDarkMode ? 'bg-transparent border-[#484644] text-[#c8c6c4] hover:bg-[#323130] hover:border-[#605e5c]' : 'bg-transparent border-[#edebe9] text-[#605e5c] hover:bg-[#f3f2f1] hover:border-[#c8c6c4]')}`}>{cat}</button>
                         ))}
                     </div>
                 </div>
 
                 {/* Resource Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {filteredResources.map((resource) => {
+                    {filteredResources.map((resource, index) => {
                         const selectedSubResource = subResourceSelections[resource.name] || (resource.subResources?.[0]?.suffix);
                         const genName = generateName(resource, selectedSubResource);
                         const isCopied = copiedId === resource.name;
                         const isExpanded = expandedCard === resource.name;
                         const isTooLong = resource.maxLength && genName.length > resource.maxLength;
+                        // Cap stagger delay at 10 items to prevent long waits
+                        const staggerClass = index < 10 ? `stagger-${index + 1}` : '';
 
                         return (
-                            <ResourceCard
-                                key={resource.name}
-                                id={`resource-${resource.name}`}
-                                resource={resource}
-                                genName={genName}
-                                isCopied={isCopied}
-                                isExpanded={isExpanded}
-                                isTooLong={isTooLong}
-                                isDarkMode={isDarkMode}
-                                onCopy={(e) => copyToClipboard(genName, resource.name, e)}
-                                onToggle={() => handleCardToggle(resource.name, isExpanded)}
-                                selectedSubResource={selectedSubResource}
-                                onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
-                            />
+                            <div key={resource.name} className={`animate-fade-in opacity-0 ${staggerClass} ${isExpanded ? 'col-span-full z-10' : ''}`}>
+                                <ResourceCard
+                                    id={`resource-${resource.name}`}
+                                    resource={resource}
+                                    genName={genName}
+                                    isCopied={isCopied}
+                                    isExpanded={isExpanded}
+                                    isTooLong={isTooLong}
+                                    isDarkMode={isDarkMode}
+                                    onCopy={(e) => copyToClipboard(genName, resource.name, e)}
+                                    onToggle={() => handleCardToggle(resource.name, isExpanded)}
+                                    selectedSubResource={selectedSubResource}
+                                    onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
+                                />
+                            </div>
                         );
                     })}
                 </div>
@@ -242,7 +245,7 @@ export default function App() {
                 <button
                     onClick={scrollToTop}
                     aria-label="Scroll to top"
-                    className={`fixed bottom-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 z-50 ${isDarkMode ? 'bg-[#323130] text-white hover:bg-[#484644]' : 'bg-[#0078d4] text-white hover:bg-[#106ebe]'}`}
+                    className={`fixed bottom-6 right-6 p-3 rounded-full shadow-lg hover:shadow-depth transition-all duration-300 z-50 animate-scale-in ${isDarkMode ? 'bg-[#323130] text-white hover:bg-[#484644]' : 'bg-primary-gradient text-white hover:shadow-glow'}`}
                 >
                     <ArrowUp className="w-5 h-5" />
                 </button>

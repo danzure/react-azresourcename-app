@@ -11,7 +11,7 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
         <div
             id={id}
             onClick={onToggle}
-            className={`group relative flex flex-col rounded border shadow-sm cursor-pointer transition-all duration-200 ${isExpanded ? 'col-span-full ring-2 ring-[#0078d4] z-10' : 'hover:shadow-md hover:border-[#0078d4]/30'} ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'} ${isTooLong ? 'border-l-4 border-l-[#a80000]' : ''}`}
+            className={`group relative flex flex-col rounded border cursor-pointer transition-all duration-300 ${isExpanded ? 'ring-2 ring-[#0078d4] shadow-depth' : 'hover:-translate-y-1 hover:shadow-depth shadow-soft'} ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'} ${isTooLong ? 'border-l-4 border-l-[#a80000]' : ''}`}
         >
             <div className="p-4 flex flex-col h-full gap-3">
                 <div className="flex items-start justify-between gap-3">
@@ -57,15 +57,17 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
             </div>
 
             {isExpanded && (
-                <ExpandedPanel
-                    resource={resource}
-                    genName={genName}
-                    isCopied={isCopied}
-                    isDarkMode={isDarkMode}
-                    onCopy={onCopy}
-                    selectedSubResource={selectedSubResource}
-                    onSubResourceChange={onSubResourceChange}
-                />
+                <div className="animate-fade-in">
+                    <ExpandedPanel
+                        resource={resource}
+                        genName={genName}
+                        isCopied={isCopied}
+                        isDarkMode={isDarkMode}
+                        onCopy={onCopy}
+                        selectedSubResource={selectedSubResource}
+                        onSubResourceChange={onSubResourceChange}
+                    />
+                </div>
             )}
         </div>
     );
