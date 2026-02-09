@@ -15,6 +15,15 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
         } else if (selectedSubResource === 'bas') {
             displayDesc = "Dedicated subnet for Azure Bastion. The name 'AzureBastionSubnet' is mandatory.";
             displayBestPractice = "Must be named exactly 'AzureBastionSubnet'. Minimum size is /26. Must be in the same VNet as the VMs it connects to.";
+        } else if (selectedSubResource === 'gw') {
+            displayDesc = "Dedicated subnet for Virtual Network Gateways (VPN/ExpressRoute). The name 'GatewaySubnet' is mandatory.";
+            displayBestPractice = "Must be named exactly 'GatewaySubnet'. Recommended size is /27 or larger.";
+        } else if (selectedSubResource === 'afwm') {
+            displayDesc = "Dedicated management subnet for Azure Firewall (Basic SKU or forced tunneling). The name 'AzureFirewallManagementSubnet' is mandatory.";
+            displayBestPractice = "Must be named exactly 'AzureFirewallManagementSubnet'. Minimum size is /26.";
+        } else if (selectedSubResource === 'rs') {
+            displayDesc = "Dedicated subnet for Azure Route Server. The name 'RouteServerSubnet' is mandatory.";
+            displayBestPractice = "Must be named exactly 'RouteServerSubnet'. Minimum size is /27.";
         }
     }
 

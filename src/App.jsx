@@ -68,6 +68,9 @@ export default function App() {
         if (resource.name === 'Subnet') {
             if (selectedSubResource === 'afw') return 'AzureFirewallSubnet';
             if (selectedSubResource === 'bas') return 'AzureBastionSubnet';
+            if (selectedSubResource === 'gw') return 'GatewaySubnet';
+            if (selectedSubResource === 'afwm') return 'AzureFirewallManagementSubnet';
+            if (selectedSubResource === 'rs') return 'RouteServerSubnet';
         }
 
         const cleanWorkload = workload.toLowerCase().replace(/[^a-z0-9]/g, '');

@@ -109,7 +109,10 @@ export const RESOURCE_DATA_RAW = [
             { suffix: 'afw', label: 'Azure Firewall', dnsZone: null },
             { suffix: 'bas', label: 'Bastion Host', dnsZone: null },
             { suffix: 'aks', label: 'AKS Cluster', dnsZone: null },
-            { suffix: 'pe', label: 'Private Endpoints', dnsZone: null }
+            { suffix: 'pe', label: 'Private Endpoints', dnsZone: null },
+            { suffix: 'gw', label: 'Virtual Network Gateway', dnsZone: null },
+            { suffix: 'afwm', label: 'Azure Firewall Management', dnsZone: null },
+            { suffix: 'rs', label: 'Route Server', dnsZone: null }
         ]
     },
     { category: 'Networking', name: 'Network security group', abbrev: 'nsg', maxLength: 80, scope: 'Resource group', chars: 'a-z, A-Z, 0-9, -, _, .', desc: 'Stateful packet filter with priority-based allow/deny rules for TCP, UDP, and ICMP traffic. Supports service tags, ASGs, and augmented rules for simplified management at scale.', bestPractice: 'Name pattern: nsg-{subnet|vm}-{purpose}. Associate with subnet names; one NSG per subnet is preferred pattern.', learnUrl: 'https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview' },
