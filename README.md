@@ -12,7 +12,7 @@ A web application for generating consistent, compliant Azure resource names. Bas
 
 ## Live Demo
 
-[https://polite-moss-0aaa36f03.azurestaticapps.net/](https://polite-moss-0aaa36f03.1.azurestaticapps.net/)
+[https://a-zurenamer.app/](https://a-zurenamer.app/)
 
 ## Resources
 
