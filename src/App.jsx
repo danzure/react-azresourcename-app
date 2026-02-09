@@ -64,6 +64,12 @@ export default function App() {
             resAbbrev = `${resAbbrev}-${selectedSubResource}`;
         }
 
+        // Special handling for Azure Firewall and Bastion subnets (must be exact names)
+        if (resource.name === 'Subnet') {
+            if (selectedSubResource === 'afw') return 'AzureFirewallSubnet';
+            if (selectedSubResource === 'bas') return 'AzureBastionSubnet';
+        }
+
         const cleanWorkload = workload.toLowerCase().replace(/[^a-z0-9]/g, '');
         const cleanOrg = orgPrefix.toLowerCase().replace(/[^a-z0-9]/g, '');
         const regAbbrev = currentRegion?.abbrev || 'uks';

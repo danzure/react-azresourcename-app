@@ -5,6 +5,19 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
     // Find the currently selected sub-resource details
     const currentSubResource = resource.subResources?.find(sr => sr.suffix === selectedSubResource);
 
+    let displayDesc = resource.desc;
+    let displayBestPractice = resource.bestPractice;
+
+    if (resource.name === 'Subnet') {
+        if (selectedSubResource === 'afw') {
+            displayDesc = "Dedicated subnet for Azure Firewall. The name 'AzureFirewallSubnet' is mandatory.";
+            displayBestPractice = "Must be named exactly 'AzureFirewallSubnet'. Recommended size is /26.";
+        } else if (selectedSubResource === 'bas') {
+            displayDesc = "Dedicated subnet for Azure Bastion. The name 'AzureBastionSubnet' is mandatory.";
+            displayBestPractice = "Must be named exactly 'AzureBastionSubnet'. Minimum size is /26. Must be in the same VNet as the VMs it connects to.";
+        }
+    }
+
     return (
         <div onClick={(e) => e.stopPropagation()} className={`p-6 border-t cursor-default ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-[#faf9f8] border-[#edebe9]'}`}>
             {/* Header */}
@@ -57,14 +70,14 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                 <div className="flex flex-col gap-4">
                     <div>
                         <span className={`text-[11px] font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Description</span>
-                        <p className={`text-[13px] mt-1.5 leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{resource.desc}</p>
+                        <p className={`text-[13px] mt-1.5 leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{displayDesc}</p>
                     </div>
                     <div>
                         <span className={`text-[11px] font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>CAF Best Practice</span>
                         <div className={`mt-1.5 p-3 rounded border-l-4 ${isDarkMode ? 'bg-[#252423] border-[#0078d4]' : 'bg-white border-[#0078d4]'}`}>
                             <div className="flex gap-3">
                                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#0078d4]" />
-                                <p className={`text-[13px] leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{resource.bestPractice}</p>
+                                <p className={`text-[13px] leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{displayBestPractice}</p>
                             </div>
                         </div>
                     </div>
