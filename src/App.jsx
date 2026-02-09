@@ -142,15 +142,15 @@ export default function App() {
     const liveSchemaStr = useMemo(() => {
         let parts = [];
         namingOrder.forEach(part => {
-            if (part === 'Org' && showOrg) parts.push(orgPrefix || '{org}');
+            if (part === 'Org' && showOrg) parts.push('{org}');
             if (part === 'Resource') parts.push('{resource}');
-            if (part === 'Workload') parts.push(workload || '{workload}');
-            if (part === 'Environment') parts.push(envValue || '{env}');
-            if (part === 'Region') parts.push(currentRegion?.abbrev || '{region}');
-            if (part === 'Instance') parts.push(formattedInstance || '{instance}');
+            if (part === 'Workload') parts.push('{workload}');
+            if (part === 'Environment') parts.push('{environment}');
+            if (part === 'Region') parts.push('{region}');
+            if (part === 'Instance') parts.push('{instance}');
         });
         return parts.join('-');
-    }, [namingOrder, showOrg, orgPrefix, workload, envValue, currentRegion, formattedInstance]);
+    }, [namingOrder, showOrg]);
 
     return (
         <div className={`min-h-screen font-sans transition-colors duration-200 ${isDarkMode ? 'bg-[#111009] text-white' : 'bg-[#faf9f8] text-[#201f1e]'}`}>

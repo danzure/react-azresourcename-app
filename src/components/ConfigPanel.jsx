@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy, Check, Layers, Info } from 'lucide-react';
+import { ChevronDown, ChevronUp, Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy, Check, Layers, Info, Globe } from 'lucide-react';
 import SearchableSelect from './SearchableSelect';
 import Tooltip from './Tooltip';
 import { AZURE_REGIONS, ENVIRONMENTS } from '../data/constants';
@@ -57,6 +57,27 @@ export default function ConfigPanel({
                                 </div>
                                 {/* Form grid - label left, input right */}
                                 <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 items-center">
+                                    {/* Org Prefix */}
+                                    <Tooltip content="Organisation prefix" isDarkMode={isDarkMode}>
+                                        <label className={`text-[12px] font-medium text-right ${!showOrg ? 'opacity-50' : ''} ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Org Prefix</label>
+                                    </Tooltip>
+                                    <div className="flex items-center gap-1.5">
+                                        <input
+                                            type="text"
+                                            value={orgPrefix}
+                                            onChange={(e) => setOrgPrefix(e.target.value)}
+                                            placeholder="Optional"
+                                            disabled={!showOrg}
+                                            className={`flex-1 px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 disabled:opacity-40 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
+                                        />
+                                        <button
+                                            onClick={() => setShowOrg(!showOrg)}
+                                            className={`h-[28px] w-[28px] flex items-center justify-center rounded border transition-colors shrink-0 ${showOrg ? 'bg-[#0078d4] border-[#0078d4] text-white' : (isDarkMode ? 'bg-transparent border-[#605e5c] text-[#8a8886] hover:border-[#8a8886]' : 'bg-white border-[#8a8886] text-[#605e5c] hover:border-[#323130]')}`}
+                                            title={showOrg ? 'Disable Org' : 'Enable Org'}
+                                        >
+                                            {showOrg ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                                        </button>
+                                    </div>
                                     {/* Workload */}
                                     <Tooltip content="Application or workload name" isDarkMode={isDarkMode}>
                                         <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Workload</label>
@@ -77,7 +98,21 @@ export default function ConfigPanel({
                                     <Tooltip content="Azure region" isDarkMode={isDarkMode}>
                                         <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Region</label>
                                     </Tooltip>
-                                    <SearchableSelect items={AZURE_REGIONS} value={regionValue} onChange={setRegionValue} isDarkMode={isDarkMode} placeholder="Select..." compact />
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="flex-1 min-w-0">
+                                            <SearchableSelect items={AZURE_REGIONS} value={regionValue} onChange={setRegionValue} isDarkMode={isDarkMode} placeholder="Select..." compact />
+                                        </div>
+                                        <a
+                                            href="https://datacenters.microsoft.com/globe/explore/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            title="View Azure Infrastructure Map"
+                                            className={`h-[32px] flex items-center justify-center rounded border transition-colors shrink-0 px-2 gap-1.5 no-underline ${isDarkMode ? 'bg-transparent border-[#605e5c] text-[#c8c6c4] hover:border-[#8a8886]' : 'bg-white border-[#8a8886] text-[#605e5c] hover:border-[#323130]'}`}
+                                        >
+                                            <Globe className="w-3.5 h-3.5" />
+                                            <span className="text-[11px] font-semibold">View Map</span>
+                                        </a>
+                                    </div>
                                     {/* Instance */}
                                     <Tooltip content="Instance number (001-999)" isDarkMode={isDarkMode}>
                                         <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Instance</label>
@@ -90,27 +125,6 @@ export default function ConfigPanel({
                                         placeholder="001"
                                         className={`px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
                                     />
-                                    {/* Org Prefix */}
-                                    <Tooltip content="Organisation prefix" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${!showOrg ? 'opacity-50' : ''} ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Org</label>
-                                    </Tooltip>
-                                    <div className="flex items-center gap-1.5">
-                                        <input
-                                            type="text"
-                                            value={orgPrefix}
-                                            onChange={(e) => setOrgPrefix(e.target.value)}
-                                            placeholder="Org"
-                                            disabled={!showOrg}
-                                            className={`flex-1 px-2.5 h-[28px] border rounded outline-none text-[13px] transition-all duration-200 focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 disabled:opacity-40 ${isDarkMode ? 'bg-[#252423] text-white border-[#605e5c] placeholder:text-[#605e5c]' : 'bg-white text-[#201f1e] border-[#8a8886] placeholder:text-[#a19f9d]'}`}
-                                        />
-                                        <button
-                                            onClick={() => setShowOrg(!showOrg)}
-                                            className={`h-[28px] w-[28px] flex items-center justify-center rounded border transition-colors shrink-0 ${showOrg ? 'bg-[#0078d4] border-[#0078d4] text-white' : (isDarkMode ? 'bg-transparent border-[#605e5c] text-[#8a8886] hover:border-[#8a8886]' : 'bg-white border-[#8a8886] text-[#605e5c] hover:border-[#323130]')}`}
-                                            title={showOrg ? 'Disable Org' : 'Enable Org'}
-                                        >
-                                            {showOrg ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
