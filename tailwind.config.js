@@ -10,8 +10,9 @@ export default {
                 mono: ['Cascadia Code', 'Consolas', 'ui-monospace', 'monospace'],
             },
             boxShadow: {
-                'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                'depth': '0 8px 30px rgba(0, 0, 0, 0.12)',
+                'soft': '0 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06)', // Standard card
+                'depth': '0 8px 16px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.04)', // Hover / active
+                'flyout': '0 16px 32px rgba(0, 0, 0, 0.12), 0 0 4px rgba(0, 0, 0, 0.08)', // Panels / Modals
                 'glow': '0 0 15px rgba(0, 120, 212, 0.3)',
             },
             backgroundImage: {

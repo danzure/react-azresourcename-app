@@ -15,8 +15,8 @@ export default function ConfigPanel({
                 {/* Header row */}
                 <div className="flex items-center justify-between mb-3">
                     <div>
-                        <h2 className={`text-[16px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Configuration</h2>
-                        <p className={`text-[12px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Define naming parameters</p>
+                        <h2 className={`text-[16px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#242424]'}`}>Configuration</h2>
+                        <p className={`text-[12px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#616161]'}`}>Define naming parameters</p>
                     </div>
                     <button onClick={onToggleMinimize} className="text-[13px] font-medium text-[#0078d4] hover:underline flex items-center gap-1">
                         {isMinimized ? 'Show' : 'Hide'}
@@ -29,12 +29,12 @@ export default function ConfigPanel({
                         {/* Two-column grid: Parameters + About (reversed order on mobile) */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                             {/* About / CAF Introduction - shows first on mobile via order */}
-                            <div className={`order-1 lg:order-2 p-3 rounded border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                            <div className={`order-1 lg:order-2 p-3 rounded-lg border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                                 <div className="flex items-center gap-2 mb-3">
                                     <Info className="w-3.5 h-3.5 text-[#0078d4]" />
                                     <h3 className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>About This Tool</h3>
                                 </div>
-                                <div className={`text-[12px] leading-relaxed space-y-2 ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>
+                                <div className={`text-[12px] leading-relaxed space-y-2 ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>
                                     <p>
                                         This tool generates consistent Azure resource names following Microsoft's{' '}
                                         <a href="https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming" target="_blank" rel="noopener noreferrer" className="text-[#0078d4] hover:underline font-medium">
@@ -50,7 +50,7 @@ export default function ConfigPanel({
                             </div>
 
                             {/* Parameters - shows second on mobile via order */}
-                            <div className={`order-2 lg:order-1 p-3 rounded border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                            <div className={`order-2 lg:order-1 p-3 rounded-lg border shadow-soft ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                                 <div className="flex items-center gap-2 mb-3">
                                     <Edit3 className="w-3.5 h-3.5 text-[#0078d4]" />
                                     <h3 className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Parameters</h3>
@@ -59,7 +59,7 @@ export default function ConfigPanel({
                                 <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 items-center">
                                     {/* Org Prefix */}
                                     <Tooltip content="Organisation prefix" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${!showOrg ? 'opacity-50' : ''} ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Org Prefix</label>
+                                        <label className={`text-[12px] font-medium text-right ${!showOrg ? 'opacity-50' : ''} ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>Org Prefix</label>
                                     </Tooltip>
                                     <div className="flex items-center gap-1.5">
                                         <input
@@ -80,7 +80,7 @@ export default function ConfigPanel({
                                     </div>
                                     {/* Workload */}
                                     <Tooltip content="Application or workload name" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Workload</label>
+                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>Workload</label>
                                     </Tooltip>
                                     <input
                                         type="text"
@@ -91,12 +91,12 @@ export default function ConfigPanel({
                                     />
                                     {/* Environment */}
                                     <Tooltip content="Lifecycle stage" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Environment</label>
+                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>Environment</label>
                                     </Tooltip>
                                     <SearchableSelect items={ENVIRONMENTS} value={envValue} onChange={setEnvValue} isDarkMode={isDarkMode} compact />
                                     {/* Region */}
                                     <Tooltip content="Azure region" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Region</label>
+                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>Region</label>
                                     </Tooltip>
                                     <div className="flex items-center gap-1.5">
                                         <div className="flex-1 min-w-0">
@@ -115,7 +115,7 @@ export default function ConfigPanel({
                                     </div>
                                     {/* Instance */}
                                     <Tooltip content="Instance number (001-999)" isDarkMode={isDarkMode}>
-                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Instance</label>
+                                        <label className={`text-[12px] font-medium text-right ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#616161]'}`}>Instance</label>
                                     </Tooltip>
                                     <input
                                         type="text"
@@ -130,13 +130,13 @@ export default function ConfigPanel({
                         </div>
 
                         {/* Pattern Builder - full width with mobile-optimized layout */}
-                        <div className={`mt-3 p-3 rounded border ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9] shadow-sm'}`}>
+                        <div className={`mt-3 p-3 rounded-lg border ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-white border-[#edebe9] shadow-soft'}`}>
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-3">
                                 <div className="flex items-center gap-2">
                                     <Layers className="w-3.5 h-3.5 text-[#0078d4]" />
                                     <h3 className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Pattern Builder</h3>
                                 </div>
-                                <span className={`text-[11px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>
+                                <span className={`text-[11px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#616161]'}`}>
                                     <span className="hidden sm:inline">— </span>Customize segment order for your naming convention
                                 </span>
                             </div>
@@ -180,7 +180,7 @@ export default function ConfigPanel({
                         <div className={`mt-3 px-3 py-2 rounded border flex items-center gap-3 ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-[#faf9f8] border-[#edebe9]'}`}>
                             <div className="flex items-center gap-2 shrink-0">
                                 <Eye className="w-3.5 h-3.5 text-[#0078d4]" />
-                                <span className={`text-[12px] font-medium ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Preview</span>
+                                <span className={`text-[12px] font-medium ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#616161]'}`}>Preview</span>
                             </div>
                             <div className={`flex-1 px-3 py-1.5 rounded font-mono text-[14px] font-semibold tracking-wide ${isDarkMode ? 'bg-[#252423] text-[#60cdff]' : 'bg-white text-[#0078d4] border border-[#edebe9]'}`}>
                                 {liveSchemaStr}

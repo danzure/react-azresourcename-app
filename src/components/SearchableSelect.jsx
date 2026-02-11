@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Check, HelpCircle } from 'lucide-react';
 import Tooltip from './Tooltip';
 
@@ -8,10 +8,13 @@ export default function SearchableSelect({ items, value, onChange, label, isDark
     const wrapperRef = useRef(null);
 
     const selectedItem = items.find(i => i.value === value && !i.type) || items.find(i => !i.type);
-    const filteredItems = items.filter(i => {
-        if (i.type === 'header') return true;
-        return String(i.label).toLowerCase().includes(search.toLowerCase());
-    });
+
+    const filteredItems = useMemo(() => {
+        return items.filter(i => {
+            if (i.type === 'header') return true;
+            return String(i.label).toLowerCase().includes(search.toLowerCase());
+        });
+    }, [items, search]);
 
     useEffect(() => {
         function handleClickOutside(event) {

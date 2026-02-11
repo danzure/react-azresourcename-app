@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Search, X, Filter, ArrowUp } from 'lucide-react';
 
 import Header from './components/Header';
@@ -24,6 +24,32 @@ export default function App() {
     const [expandedCard, setExpandedCard] = useState(null);
     const [subResourceSelections, setSubResourceSelections] = useState({}); // Track selected sub-resource per resource
     const [showScrollTop, setShowScrollTop] = useState(false);
+
+    const searchInputRef = useRef(null);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Escape to close expanded card or clear search
+            if (e.key === 'Escape') {
+                if (expandedCard) {
+                    setExpandedCard(null);
+                } else if (searchTerm) {
+                    setSearchTerm('');
+                    searchInputRef.current?.blur();
+                }
+            }
+
+            // Ctrl+K or / to focus search
+            if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement !== searchInputRef.current)) {
+                e.preventDefault();
+                searchInputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [expandedCard, searchTerm]);
 
     // Scroll-to-top visibility
     useEffect(() => {
@@ -167,8 +193,11 @@ export default function App() {
     }, [namingOrder, showOrg]);
 
     return (
-        <div className={`min-h-screen font-sans transition-colors duration-200 ${isDarkMode ? 'bg-[#111009] text-white' : 'bg-[#faf9f8] text-[#201f1e]'}`}>
-            <Header isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode(!isDarkMode)} />
+        <div className={`min-h-screen font-sans transition-colors duration-200 ${isDarkMode ? 'bg-[#111009] text-white' : 'bg-[#faf9f8] text-[#242424]'}`}>
+            <Header
+                isDarkMode={isDarkMode}
+                onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+            />
 
             <ConfigPanel
                 isDarkMode={isDarkMode}
@@ -195,16 +224,16 @@ export default function App() {
 
             <div className="max-w-[1600px] mx-auto px-6 pt-8 space-y-8">
                 {/* Services Header Card */}
-                <div className={`p-5 rounded shadow-sm border flex flex-col gap-4 ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                <div className={`p-5 rounded-lg shadow-soft border flex flex-col gap-4 ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h2 className={`text-[18px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>Services</h2>
-                            <p className={`text-[12px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Azure Resource Inventory</p>
+                            <h2 className={`text-[18px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#242424]'}`}>Services</h2>
+                            <p className={`text-[13px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#616161]'}`}>Select a resource to generate a name</p>
                         </div>
                         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:max-w-xl">
                             <div className={`relative flex-1 w-full flex items-center px-2 h-[32px] border rounded ${isDarkMode ? 'bg-[#1b1a19] border-[#605e5c]' : 'bg-white border-[#8a8886]'}`}>
                                 <Search className="w-4 h-4 mr-2 text-[#0078d4]" />
-                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Filter services..." className={`w-full bg-transparent border-none outline-none text-[14px] ${isDarkMode ? 'text-white placeholder:text-[#605e5c]' : 'text-[#201f1e] placeholder:text-[#a19f9d]'}`} />
+                                <input ref={searchInputRef} type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Filter services... (Ctrl+K)" className={`w-full bg-transparent border-none outline-none text-[14px] ${isDarkMode ? 'text-white placeholder:text-[#605e5c]' : 'text-[#201f1e] placeholder:text-[#a19f9d]'}`} />
                                 {searchTerm && <button onClick={() => setSearchTerm('')} className="p-0.5 hover:bg-black/10 rounded-full"><X className={`w-3 h-3 ${isDarkMode ? 'text-white' : 'text-black'}`} /></button>}
                             </div>
                         </div>
