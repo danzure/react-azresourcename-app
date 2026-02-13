@@ -1,4 +1,5 @@
 import { Moon, Sun } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 export default function Header({ isDarkMode, onToggleTheme }) {
     return (
@@ -16,3 +17,8 @@ export default function Header({ isDarkMode, onToggleTheme }) {
         </header>
     );
 }
+
+Header.propTypes = {
+    isDarkMode: PropTypes.bool.isRequired,
+    onToggleTheme: PropTypes.func.isRequired,
+};

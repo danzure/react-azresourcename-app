@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 export default function ValidationHighlight({ name, allowedCharsPattern, isDarkMode }) {
     const validator = useMemo(() => {
@@ -32,3 +33,9 @@ export default function ValidationHighlight({ name, allowedCharsPattern, isDarkM
         </span>
     );
 }
+
+ValidationHighlight.propTypes = {
+    name: PropTypes.string.isRequired,
+    allowedCharsPattern: PropTypes.string,
+    isDarkMode: PropTypes.bool.isRequired,
+};

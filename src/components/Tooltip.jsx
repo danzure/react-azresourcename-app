@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function Tooltip({ content, children, isDarkMode }) {
     return (
         <div className="relative group/tooltip w-full flex flex-col gap-1">
@@ -8,3 +10,9 @@ export default function Tooltip({ content, children, isDarkMode }) {
         </div>
     );
 }
+
+Tooltip.propTypes = {
+    content: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
+    isDarkMode: PropTypes.bool.isRequired,
+};

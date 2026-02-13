@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy
 import SearchableSelect from './SearchableSelect';
 import Tooltip from './Tooltip';
 import { AZURE_REGIONS, ENVIRONMENTS } from '../data/constants';
+import PropTypes from 'prop-types';
 
 export default function ConfigPanel({
     isDarkMode, isMinimized, onToggleMinimize,
@@ -201,3 +202,26 @@ export default function ConfigPanel({
         </nav>
     );
 }
+
+ConfigPanel.propTypes = {
+    isDarkMode: PropTypes.bool.isRequired,
+    isMinimized: PropTypes.bool.isRequired,
+    onToggleMinimize: PropTypes.func.isRequired,
+    workload: PropTypes.string.isRequired,
+    setWorkload: PropTypes.func.isRequired,
+    envValue: PropTypes.string.isRequired,
+    setEnvValue: PropTypes.func.isRequired,
+    regionValue: PropTypes.string.isRequired,
+    setRegionValue: PropTypes.func.isRequired,
+    instance: PropTypes.string.isRequired,
+    onInstanceChange: PropTypes.func.isRequired,
+    orgPrefix: PropTypes.string.isRequired,
+    setOrgPrefix: PropTypes.func.isRequired,
+    showOrg: PropTypes.bool.isRequired,
+    setShowOrg: PropTypes.func.isRequired,
+    namingOrder: PropTypes.arrayOf(PropTypes.string).isRequired,
+    onMoveItem: PropTypes.func.isRequired,
+    liveSchemaStr: PropTypes.string.isRequired,
+    copiedId: PropTypes.string,
+    onCopy: PropTypes.func.isRequired,
+};

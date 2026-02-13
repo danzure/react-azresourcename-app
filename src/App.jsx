@@ -4,6 +4,7 @@ import { Search, X, Filter, ArrowUp } from 'lucide-react';
 import Header from './components/Header';
 import ConfigPanel from './components/ConfigPanel';
 import ResourceCard from './components/ResourceCard';
+import useDebounce from './hooks/useDebounce';
 
 import { AZURE_REGIONS, RESOURCE_DATA_SORTED, CATEGORIES } from './data/constants';
 
@@ -26,6 +27,9 @@ export default function App() {
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     const searchInputRef = useRef(null);
+
+    // Debounce search term to prevent expensive filtering on every keystroke
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
     // Keyboard shortcuts
     useEffect(() => {
@@ -142,11 +146,11 @@ export default function App() {
 
     const filteredResources = useMemo(() => {
         return RESOURCE_DATA_SORTED.filter(rt => {
-            const matchesSearch = String(rt.name).toLowerCase().includes(searchTerm.toLowerCase()) || String(rt.abbrev).toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = String(rt.name).toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || String(rt.abbrev).toLowerCase().includes(debouncedSearchTerm.toLowerCase());
             const matchesCategory = activeCategory === 'All' || rt.category === activeCategory;
             return matchesSearch && matchesCategory;
         });
-    }, [searchTerm, activeCategory]);
+    }, [debouncedSearchTerm, activeCategory]);
 
     const copyToClipboard = useCallback(async (text, id, e) => {
         if (e) { e.stopPropagation(); e.preventDefault(); }
@@ -247,35 +251,42 @@ export default function App() {
                 </div>
 
                 {/* Resource Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {filteredResources.map((resource, index) => {
-                        const selectedSubResource = subResourceSelections[resource.name] || (resource.subResources?.[0]?.suffix);
-                        const genName = generateName(resource, selectedSubResource);
-                        const isCopied = copiedId === resource.name;
-                        const isExpanded = expandedCard === resource.name;
-                        const isTooLong = resource.maxLength && genName.length > resource.maxLength;
-                        // Cap stagger delay at 10 items to prevent long waits
-                        const staggerClass = index < 10 ? `stagger-${index + 1}` : '';
+                {filteredResources.length === 0 ? (
+                    <div className={`text-center py-16 ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>
+                        <p className="text-[14px]">No resources found matching your criteria.</p>
+                        <p className="text-[12px] mt-2">Try adjusting your search or category filter.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {filteredResources.map((resource, index) => {
+                            const selectedSubResource = subResourceSelections[resource.name] || (resource.subResources?.[0]?.suffix);
+                            const genName = generateName(resource, selectedSubResource);
+                            const isCopied = copiedId === resource.name;
+                            const isExpanded = expandedCard === resource.name;
+                            const isTooLong = resource.maxLength && genName.length > resource.maxLength;
+                            // Cap stagger delay at 10 items to prevent long waits
+                            const staggerClass = index < 10 ? `stagger-${index + 1}` : '';
 
-                        return (
-                            <div key={resource.name} className={`animate-fade-in opacity-0 ${staggerClass} ${isExpanded ? 'col-span-full z-10' : ''}`}>
-                                <ResourceCard
-                                    id={`resource-${resource.name}`}
-                                    resource={resource}
-                                    genName={genName}
-                                    isCopied={isCopied}
-                                    isExpanded={isExpanded}
-                                    isTooLong={isTooLong}
-                                    isDarkMode={isDarkMode}
-                                    onCopy={(e) => copyToClipboard(genName, resource.name, e)}
-                                    onToggle={() => handleCardToggle(resource.name, isExpanded)}
-                                    selectedSubResource={selectedSubResource}
-                                    onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
+                            return (
+                                <div key={resource.name} className={`animate-fade-in opacity-0 ${staggerClass} ${isExpanded ? 'col-span-full z-10' : ''}`}>
+                                    <ResourceCard
+                                        id={`resource-${resource.name}`}
+                                        resource={resource}
+                                        genName={genName}
+                                        isCopied={isCopied}
+                                        isExpanded={isExpanded}
+                                        isTooLong={isTooLong}
+                                        isDarkMode={isDarkMode}
+                                        onCopy={(e) => copyToClipboard(genName, resource.name, e)}
+                                        onToggle={() => handleCardToggle(resource.name, isExpanded)}
+                                        selectedSubResource={selectedSubResource}
+                                        onSubResourceChange={(suffix) => handleSubResourceChange(resource.name, suffix)}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
 
                 {/* Footer */}
                 <footer className={`py-6 text-center text-[12px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>

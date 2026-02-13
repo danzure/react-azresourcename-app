@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Check, HelpCircle } from 'lucide-react';
 import Tooltip from './Tooltip';
+import PropTypes from 'prop-types';
 
 export default function SearchableSelect({ items, value, onChange, label, isDarkMode, placeholder = "Select...", description, compact }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -106,3 +107,19 @@ export default function SearchableSelect({ items, value, onChange, label, isDark
         </div>
     );
 }
+
+SearchableSelect.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string,
+        type: PropTypes.string,
+        abbrev: PropTypes.string,
+    })).isRequired,
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    label: PropTypes.string,
+    isDarkMode: PropTypes.bool.isRequired,
+    placeholder: PropTypes.string,
+    description: PropTypes.string,
+    compact: PropTypes.bool,
+};

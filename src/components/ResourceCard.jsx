@@ -3,6 +3,7 @@ import { Box, Copy, Check, ShieldAlert, LayoutGrid, Cpu, Network, Database, Glob
 import ValidationHighlight from './ValidationHighlight';
 import ExpandedPanel from './ExpandedPanel';
 import { getCategoryColors } from '../data/categoryColors';
+import PropTypes from 'prop-types';
 
 const CATEGORY_ICONS = {
     'General': LayoutGrid,
@@ -90,5 +91,26 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
         </div>
     );
 }
+
+ResourceCard.propTypes = {
+    id: PropTypes.string.isRequired,
+    resource: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        abbrev: PropTypes.string.isRequired,
+        maxLength: PropTypes.number,
+        chars: PropTypes.string,
+        subResources: PropTypes.array,
+    }).isRequired,
+    genName: PropTypes.string.isRequired,
+    isCopied: PropTypes.bool.isRequired,
+    isExpanded: PropTypes.bool.isRequired,
+    isTooLong: PropTypes.bool.isRequired,
+    isDarkMode: PropTypes.bool.isRequired,
+    onCopy: PropTypes.func.isRequired,
+    onToggle: PropTypes.func.isRequired,
+    selectedSubResource: PropTypes.string,
+    onSubResourceChange: PropTypes.func,
+};
 
 export default memo(ResourceCard);

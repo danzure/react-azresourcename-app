@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Copy, Check, BookOpen, Info, ChevronDown, Globe } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, selectedSubResource, onSubResourceChange }) {
     const currentSubResource = resource.subResources?.find(sr => sr.suffix === selectedSubResource);
@@ -158,6 +159,31 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
         </div>
     );
 }
+
+ExpandedPanel.propTypes = {
+    resource: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        abbrev: PropTypes.string.isRequired,
+        category: PropTypes.string,
+        maxLength: PropTypes.number,
+        scope: PropTypes.string,
+        chars: PropTypes.string,
+        desc: PropTypes.string,
+        bestPractice: PropTypes.string,
+        learnUrl: PropTypes.string,
+        subResources: PropTypes.arrayOf(PropTypes.shape({
+            suffix: PropTypes.string.isRequired,
+            label: PropTypes.string.isRequired,
+            dnsZone: PropTypes.string,
+        })),
+    }).isRequired,
+    genName: PropTypes.string.isRequired,
+    isCopied: PropTypes.bool.isRequired,
+    isDarkMode: PropTypes.bool.isRequired,
+    onCopy: PropTypes.func.isRequired,
+    selectedSubResource: PropTypes.string,
+    onSubResourceChange: PropTypes.func,
+};
 
 export default memo(ExpandedPanel);
 
