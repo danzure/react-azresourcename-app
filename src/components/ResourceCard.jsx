@@ -3,7 +3,7 @@ import { Box, Copy, Check, ShieldAlert, LayoutGrid, Cpu, Network, Database, Glob
 import ValidationHighlight from './ValidationHighlight';
 import ExpandedPanel from './ExpandedPanel';
 import { getCategoryColors } from '../data/categoryColors';
-import { VNET_TOPOLOGIES, SPOKE_TYPES } from '../data/constants';
+import { getBundleResources } from '../utils/bundleGenerator';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 
@@ -28,12 +28,8 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
     const categoryColors = getCategoryColors(resource.category, isDarkMode);
     const CategoryIcon = CATEGORY_ICONS[resource.category] || Box;
 
-    const isVNet = resource.name === 'Virtual network';
-
     const [topology, setTopology] = useState('single');
     const [selectedSpokes, setSelectedSpokes] = useState([]);
-
-    const isHubSpoke = isVNet && topology === 'hub-spoke';
 
     const handleSpokeToggle = (spokeValue) => {
         setSelectedSpokes(prev => {
@@ -42,59 +38,11 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
         });
     };
 
+    const bundle = getBundleResources(resource, topology, selectedSpokes);
+    const hasBundle = bundle && bundle.length > 0;
 
-
-    const generatedSpokeNames = isHubSpoke ? SPOKE_TYPES.filter(t => selectedSpokes.includes(t.value)).map(type => {
-        // Create a temporary resource object to generate the spoke name
-        // We append the spoke type to the abbreviation to form the new resource type context
-        // e.g. vnet -> vnet-spoke-identity
-        // We'll trust the generateName function to handle the components
-        // But generateName uses the resource abbrev.
-        // So we hack it slightly: we pass a modified resource.
-        // Actually, typically patterns are vnet-{workload}-{env}-{region}
-        // For a hub, maybe vnet-hub-{env}-{region}?
-        // For a spoke, vnet-{type}-{env}-{region}?
-        // Let's assume we replace the "workload" part with the spoke type or append it?
-        // The generateName function uses the global "workload" state.
-        // We can't easily override that state from here without passing more props.
-        // BUT, we can trick it by modifying the resource abbrev to include the type?
-        // Standard: vnet-workload-env-region
-        // We want: vnet-identity-env-region (if identity is the "workload")
-        // No, current logic is: {org}-{resource}-{workload}-{env}-{region}-{instance}
-        // If we want vnet-hub-... we want the 'workload' to be 'hub'?
-        // Or we want the resource abbrev to be 'vnet-hub'?
-        // Let's use customized abbreviations for the generation.
-
-        // Hub Name:
-        // resource.abbrev = 'vnet-hub' (if we want that)
-        // or just 'vnet' and we force workload to be 'hub'?
-        // We can't force workload.
-        // Let's create a visual list.
-
-        // Actually, the generateName function in App.jsx (lines 90-146) uses `resource.abbrev`.
-        // It consumes `workload` from state.
-        // It produces: `vnet-{workload}-{env}-{region}-{instance}`.
-        // A Hub VNet usually doesn't have a workload in the name, or "hub" IS the workload.
-        // A Spoke VNet: `vnet-identity-...` where identity is the workload.
-
-        // Since we can't change the global workload state for just this card render without causing side effects or flicker,
-        // we might be limited.
-        // However, we can modify the `abbrev` passed to `generateName` if we want to "bake in" the type.
-        // E.g. pass resource with abbrev `vnet-identity`.
-        // Then result is `vnet-identity-{workload}-{env}...` which is double.
-        // If workload is empty, it works: `vnet-identity-{env}...`.
-        // If workload is present, it's `vnet-identity-myapp-{env}...` which might be weird.
-
-        // Alternative: The user wants "Hub and Spoke topology and suggest names".
-        // Let's assume for this specific generator, we want to override the "Resource Abbreviation" slot
-        // to be `vnet-hub` and `vnet-{spoke}`.
-        // And we hope the user accepts that the global "workload" is also appended if they have one set.
-        // Or, we display it as such.
-        const modifiedResource = { ...resource, abbrev: `vnet-${type.abbrev}` };
-        return { label: type.label, name: generateName(modifiedResource, null) };
-    }) : [];
-
-    const hubName = isHubSpoke ? generateName({ ...resource, abbrev: 'vnet-hub' }, null) : genName;
+    // Helper to generate name - utilizing the passed generateName function with modified resource context
+    const getGeneratedName = (resItem) => generateName(resItem, null);
 
 
     return (
@@ -131,50 +79,32 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
                 </p>
 
                 <div className="mt-auto pt-2">
-                    <div className={`relative rounded px-3 border flex flex-col justify-center ${isHubSpoke ? 'min-h-[32px] py-2 gap-2 h-auto' : 'h-[32px]'} ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-[#faf9f8] border-[#edebe9]'}`}>
-                        {!isHubSpoke ? (
-                            <div className={`text-[13px] font-medium font-mono truncate w-full pr-8 ${isTooLong ? 'text-[#a80000]' : isDarkMode ? 'text-[#ffffff]' : 'text-[#242424]'}`}>
-                                <ValidationHighlight name={genName} allowedCharsPattern={resource.chars} isDarkMode={isDarkMode} />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-2 w-full pr-8">
-                                <div className="flex flex-col">
-                                    <span className={`text-[10px] uppercase tracking-wider font-semibold opacity-50 mb-0.5 ${isDarkMode ? 'text-white' : 'text-black'}`}>Hub</span>
-                                    <div className={`text-[13px] font-medium font-mono truncate ${isDarkMode ? 'text-[#ffffff]' : 'text-[#242424]'}`}>
-                                        <ValidationHighlight name={hubName} allowedCharsPattern={resource.chars} isDarkMode={isDarkMode} />
-                                    </div>
-                                </div>
-                                {generatedSpokeNames.length > 0 && (
-                                    <>
-                                        <div className={`h-px w-full my-1 ${isDarkMode ? 'bg-[#484644]' : 'bg-[#edebe9]'}`}></div>
-                                        {generatedSpokeNames.map((spoke, idx) => (
-                                            <div key={idx} className="flex flex-col">
-                                                <span className={`text-[10px] uppercase tracking-wider font-semibold opacity-50 mb-0.5 ${isDarkMode ? 'text-white' : 'text-black'}`}>{spoke.label} Spoke</span>
-                                                <div className={`text-[13px] font-medium font-mono truncate ${isDarkMode ? 'text-[#ffffff]' : 'text-[#242424]'}`}>
-                                                    <ValidationHighlight name={spoke.name} allowedCharsPattern={resource.chars} isDarkMode={isDarkMode} />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
-                        )}
+                    <div className={`relative rounded px-3 border flex flex-col justify-center h-[32px] ${isDarkMode ? 'bg-[#1b1a19] border-[#484644]' : 'bg-[#faf9f8] border-[#edebe9]'}`}>
+                        <div className={`text-[13px] font-medium font-mono truncate w-full pr-8 flex items-center gap-2 ${isTooLong ? 'text-[#a80000]' : isDarkMode ? 'text-[#ffffff]' : 'text-[#242424]'}`}>
+                            <ValidationHighlight name={hasBundle ? getGeneratedName(bundle[0]) : genName} allowedCharsPattern={hasBundle ? bundle[0].chars : resource.chars} isDarkMode={isDarkMode} />
+                            {hasBundle && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${isDarkMode ? 'bg-[#323130] text-[#60cdff]' : 'bg-[#f3f2f1] text-[#0078d4]'}`}>
+                                    +{bundle.length - 1}
+                                </span>
+                            )}
+                        </div>
                         <button
                             onClick={(e) => {
-                                if (isHubSpoke) {
-                                    const allNames = [
-                                        `Hub: ${hubName}`,
-                                        ...generatedSpokeNames.map(s => `${s.label}: ${s.name}`)
-                                    ].join('\n');
+                                if (hasBundle) {
+                                    const allNames = bundle.map(item => `${item.name}: ${getGeneratedName(item)}`).join('\n');
                                     onCopy(e, allNames);
                                 } else {
                                     onCopy(e);
                                 }
                             }}
                             aria-label={isCopied ? 'Copied' : 'Copy name'}
-                            className={`absolute right-1 top-1 p-1.5 rounded transition-colors ${isCopied ? 'text-[#107c10]' : isDarkMode ? 'text-[#c8c6c4] hover:text-[#60cdff] hover:bg-[#323130]' : 'text-[#605e5c] hover:text-[#0078d4] hover:bg-[#f3f2f1]'}`}
+                            className={`absolute right-1 top-1 h-[24px] px-2 rounded text-[11px] font-semibold transition-all flex items-center gap-1 z-10 ${isCopied
+                                ? 'bg-[#107c10] text-white'
+                                : 'bg-[#0078d4] text-white hover:bg-[#106ebe]'
+                                }`}
                         >
-                            {isCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                            {isCopied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                            {/* Mobile visual optimization: hide text on very small screens if needed, but keeping separate for now */}
                         </button>
                     </div>
                     <div className="flex justify-between items-center text-[10px] mt-2 px-0.5 opacity-70 shrink-0">
@@ -201,6 +131,8 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
                         setTopology={setTopology}
                         selectedSpokes={selectedSpokes}
                         handleSpokeToggle={handleSpokeToggle}
+                        bundle={bundle}
+                        getBundleName={getGeneratedName}
                     />
                 </div>
             )}

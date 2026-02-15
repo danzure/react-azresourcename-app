@@ -291,6 +291,16 @@ export const VNET_TOPOLOGIES = [
     { label: 'Hub & Spoke', value: 'hub-spoke' },
 ];
 
+export const AVD_TOPOLOGIES = [
+    { label: 'Host Pool Only', value: 'single' },
+    { label: 'AVD Deployment', value: 'bundle' },
+];
+
+export const AKS_TOPOLOGIES = [
+    { label: 'Cluster Only', value: 'single' },
+    { label: 'Production Cluster', value: 'bundle' },
+];
+
 export const SPOKE_TYPES = [
     { label: 'Identity', value: 'identity', abbrev: 'id' },
     { label: 'Shared Services', value: 'shared', abbrev: 'shared' },

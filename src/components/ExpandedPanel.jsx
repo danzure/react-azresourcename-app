@@ -2,11 +2,21 @@ import { memo } from 'react';
 import { Copy, Check, BookOpen, Info, ChevronDown, Globe } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-import { VNET_TOPOLOGIES, SPOKE_TYPES } from '../data/constants';
 
-function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, selectedSubResource, onSubResourceChange, topology, setTopology, selectedSpokes, handleSpokeToggle }) {
+import { VNET_TOPOLOGIES, AVD_TOPOLOGIES, AKS_TOPOLOGIES, SPOKE_TYPES } from '../data/constants';
+import ValidationHighlight from './ValidationHighlight';
+function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, selectedSubResource, onSubResourceChange, topology, setTopology, selectedSpokes, handleSpokeToggle, bundle, getBundleName }) {
     const currentSubResource = resource.subResources?.find(sr => sr.suffix === selectedSubResource);
     const isVNet = resource.name === 'Virtual network';
+    const isAVD = resource.category === 'Desktop Virtualization' && resource.name === 'Host Pool';
+    const isAKS = resource.name === 'Kubernetes (AKS)';
+
+    let topologyOptions = [];
+    if (isVNet) topologyOptions = VNET_TOPOLOGIES;
+    if (isAVD) topologyOptions = AVD_TOPOLOGIES;
+    if (isAKS) topologyOptions = AKS_TOPOLOGIES;
+
+    const showTopology = topologyOptions.length > 0;
     const isHubSpoke = isVNet && topology === 'hub-spoke';
 
     const SCOPE_DESCRIPTIONS = {
@@ -65,12 +75,12 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                 </a>
             </div>
 
-            {/* Topology Selector (only for VNet) */}
-            {isVNet && (
+            {/* Topology Selector */}
+            {showTopology && (
                 <div className={`mb-5 p-4 rounded border ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
                     <div className="flex items-center gap-2 mb-3">
                         <svg className="w-4 h-4 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                        <span className={`text-[12px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Topology</span>
+                        <span className={`text-[12px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>{isVNet ? 'Topology' : 'Deployment Bundle'}</span>
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="relative">
@@ -79,7 +89,7 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                                 onChange={(e) => setTopology && setTopology(e.target.value)}
                                 className={`w-full h-[36px] px-3 pr-8 rounded border appearance-none cursor-pointer text-[13px] font-medium ${isDarkMode ? 'bg-[#1b1a19] border-[#484644] text-white' : 'bg-[#faf9f8] border-[#edebe9] text-[#201f1e]'}`}
                             >
-                                {VNET_TOPOLOGIES.map(t => (
+                                {topologyOptions.map(t => (
                                     <option key={t.value} value={t.value}>{t.label}</option>
                                 ))}
                             </select>
@@ -140,6 +150,47 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                 </div>
             )}
 
+            {/* Generated Bundle List */}
+            {bundle && bundle.length > 0 && (
+                <div className={`mb-5 p-4 rounded border ${isDarkMode ? 'bg-[#252423] border-[#484644]' : 'bg-white border-[#edebe9]'}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                        <svg className="w-4 h-4 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                        <span className={`text-[12px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Generated Resources</span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        {bundle.map((item, idx) => {
+                            const itemName = getBundleName(item);
+                            return (
+                                <div key={idx} className="flex flex-col">
+                                    <span className={`text-[10px] uppercase tracking-wider font-semibold opacity-50 mb-0.5 ${isDarkMode ? 'text-white' : 'text-black'}`}>{item.name}</span>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className={`text-[13px] font-medium font-mono truncate flex-1 ${isDarkMode ? 'text-[#ffffff]' : 'text-[#242424]'}`}>
+                                            <ValidationHighlight name={itemName} allowedCharsPattern={item.chars || resource.chars} isDarkMode={isDarkMode} />
+                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onCopy(e, itemName);
+                                            }}
+                                            className={`h-[24px] px-2 rounded text-[11px] font-semibold transition-all flex items-center gap-1 shrink-0 ${isDarkMode ? 'text-white' : 'text-white'} ${isCopied
+                                                ? 'bg-[#107c10]'
+                                                : 'bg-[#0078d4] hover:bg-[#106ebe]'
+                                                }`}
+                                            title="Copy this name"
+                                        >
+                                            <Copy className="w-3 h-3" />
+                                            {/* Copy text omitted for inline items to save space? Or included? User said "replicate". Included for now. */}
+                                            <span>Copy</span>
+                                        </button>
+                                    </div>
+                                    {idx < bundle.length - 1 && <div className={`h-px w-full my-2 ${isDarkMode ? 'bg-[#484644]' : 'bg-[#edebe9]'}`}></div>}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Column - Description & Best Practice */}
@@ -191,19 +242,8 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                 </div>
             </div>
 
-            {/* Copy Name Button */}
-            <button
-                onClick={onCopy}
-                aria-label={isCopied ? 'Copied to clipboard' : 'Copy resource name'}
-                className={`mt-6 w-full h-[40px] rounded font-semibold text-[14px] flex items-center justify-center gap-2 transition-all shadow-sm hover:shadow-md ${isCopied
-                    ? 'bg-[#107c10] text-white'
-                    : 'bg-primary-gradient text-white hover:opacity-90 active:scale-[0.98]'
-                    }`}
-            >
-                {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                {isCopied ? 'Copied!' : 'Copy Name'}
-            </button>
-        </div>
+
+        </div >
     );
 }
 
@@ -230,6 +270,8 @@ ExpandedPanel.propTypes = {
     onCopy: PropTypes.func.isRequired,
     selectedSubResource: PropTypes.string,
     onSubResourceChange: PropTypes.func,
+    bundle: PropTypes.array,
+    getBundleName: PropTypes.func,
 };
 
 export default memo(ExpandedPanel);
