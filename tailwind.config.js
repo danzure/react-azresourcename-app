@@ -7,6 +7,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
+                sans: ['"Segoe UI"', '"Segoe UI Web (West European)"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Helvetica Neue"', 'sans-serif'],
                 mono: ['Cascadia Code', 'Consolas', 'ui-monospace', 'monospace'],
             },
             boxShadow: {

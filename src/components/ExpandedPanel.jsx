@@ -3,18 +3,46 @@ import { Copy, Check, BookOpen, Info, ChevronDown, Globe } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 
-import { VNET_TOPOLOGIES, AVD_TOPOLOGIES, AKS_TOPOLOGIES, SPOKE_TYPES } from '../data/constants';
+import { VNET_TOPOLOGIES, AVD_TOPOLOGIES, AKS_TOPOLOGIES, SQL_TOPOLOGIES, WEB_TOPOLOGIES, SPOKE_TYPES } from '../data/constants';
 import ValidationHighlight from './ValidationHighlight';
+/**
+ * Expanded Resource Panel Component
+ * 
+ * Displays detailed view for a selected resource, including:
+ * - Topology selection (Single, Hub & Spoke, Bundle)
+ * - Generated resource names with copy functionality
+ * - Resource description and naming recommendations
+ * - Naming rules visualization
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.resource - The resource definition object
+ * @param {string} props.genName - The generated name for the base resource
+ * @param {boolean} props.isCopied - Copied feedback state
+ * @param {boolean} props.isDarkMode - Current theme state
+ * @param {Function} props.onCopy - Copy handler
+ * @param {string|null} props.selectedSubResource - Currently selected sub-resource suffix
+ * @param {Function} props.onSubResourceChange - Handler for sub-resource selection
+ * @param {string} props.topology - Current topology selection
+ * @param {Function} props.setTopology - Handler for topology selection
+ * @param {Array} props.selectedSpokes - Selected spokes for Hub & Spoke
+ * @param {Function} props.handleSpokeToggle - Handler for spoke updates
+ * @param {boolean} props.bundle - Bundle state (if applicable)
+ * @param {Function} props.getBundleName - Helper for bundle names
+ */
 function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, selectedSubResource, onSubResourceChange, topology, setTopology, selectedSpokes, handleSpokeToggle, bundle, getBundleName }) {
     const currentSubResource = resource.subResources?.find(sr => sr.suffix === selectedSubResource);
     const isVNet = resource.name === 'Virtual network';
     const isAVD = resource.category === 'Desktop Virtualization' && resource.name === 'Host Pool';
     const isAKS = resource.name === 'Kubernetes (AKS)';
+    const isSQL = resource.name === 'SQL server';
+    const isWeb = resource.name === 'App Service';
 
     let topologyOptions = [];
     if (isVNet) topologyOptions = VNET_TOPOLOGIES;
     if (isAVD) topologyOptions = AVD_TOPOLOGIES;
-    if (isAKS) topologyOptions = AKS_TOPOLOGIES;
+    if (isAKS) topologyOptions = AKS_TOPOLOGIES; // Includes Single and Bundle
+    if (isSQL) topologyOptions = SQL_TOPOLOGIES; // Includes Single and Bundle
+    if (isWeb) topologyOptions = WEB_TOPOLOGIES; // Includes Single and Bundle
 
     const showTopology = topologyOptions.length > 0;
     const isHubSpoke = isVNet && topology === 'hub-spoke';
@@ -194,18 +222,30 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Column - Description & Best Practice */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-6">
+                    {/* About this Service */}
                     <div>
-                        <span className={`text-[11px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Description</span>
-                        <p className={`text-[13px] mt-1.5 leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{displayDesc}</p>
+                        <div className="flex items-center gap-2 mb-2">
+                            <Info className="w-4 h-4 text-[#0078d4]" />
+                            <h5 className={`text-[12px] font-semibold tracking-wide uppercase ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>About this Service</h5>
+                        </div>
+                        <div className={`ml-6 p-4 rounded-r border-l-4 ${isDarkMode ? 'bg-[#041829] border-[#0078d4] border-t border-r border-b border-[#0078d4]' : 'bg-[#f0f6ff] border-[#0078d4] border-t border-r border-b border-[#0078d4]'}`}>
+                            <p className={`text-[13px] leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>
+                                {displayDesc}
+                            </p>
+                        </div>
                     </div>
+
+                    {/* Naming Recommendation */}
                     <div>
-                        <span className={`text-[11px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>CAF best practice</span>
-                        <div className={`mt-1.5 p-3 rounded border-l-4 ${isDarkMode ? 'bg-[#252423] border-[#0078d4]' : 'bg-white border-[#0078d4]'}`}>
-                            <div className="flex gap-3">
-                                <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#0078d4]" />
-                                <p className={`text-[13px] leading-relaxed ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#323130]'}`}>{displayBestPractice}</p>
-                            </div>
+                        <div className="flex items-center gap-2 mb-2">
+                            <Check className="w-4 h-4 text-[#107c10]" />
+                            <h5 className={`text-[12px] font-semibold tracking-wide uppercase ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Naming Recommendation</h5>
+                        </div>
+                        <div className={`ml-6 p-4 rounded-r border-l-4 ${isDarkMode ? 'bg-[#052505] border-[#107c10] border-t border-r border-b border-[#107c10]' : 'bg-[#dff6dd] border-[#107c10] border-t border-r border-b border-[#107c10]'}`}>
+                            <p className={`text-[13px] leading-relaxed font-medium ${isDarkMode ? 'text-[#d2d0ce]' : 'text-[#201f1e]'}`}>
+                                {displayBestPractice}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -216,34 +256,61 @@ function ExpandedPanel({ resource, genName, isCopied, isDarkMode, onCopy, select
                         <svg className="w-4 h-4 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <span className={`text-[12px] font-semibold tracking-wide ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Naming rules</span>
                     </div>
-                    <div className="space-y-3">
-                        <div className="flex items-start justify-between">
-                            <span className={`text-[13px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Scope</span>
-                            <div className="flex flex-col items-end gap-1">
-                                <span className={`text-[13px] font-semibold text-right ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>{resource.scope || 'Resource group'}</span>
-                                <span className={`text-[11px] text-right max-w-[200px] leading-tight ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>{scopeDesc}</span>
+                    <div className="space-y-4">
+                        {/* Scope */}
+                        <div className="flex items-start justify-between group/scope relative">
+                            <div className="flex flex-col gap-0.5">
+                                <span className={`text-[13px] font-medium ${isDarkMode ? 'text-[#e1dfdd]' : 'text-[#323130]'}`}>Uniqueness Scope</span>
+                                <span className={`text-[11px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>The level at which the name must be unique.</span>
+                            </div>
+                            <div className="flex flex-col items-end gap-1 text-right">
+                                <span className={`text-[13px] font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>{resource.scope || 'Resource group'}</span>
+                                <span className={`text-[11px] max-w-[200px] leading-tight ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>{scopeDesc}</span>
                             </div>
                         </div>
+
+                        {/* Max Length */}
                         <div className="flex items-center justify-between">
-                            <span className={`text-[13px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Abbreviation</span>
-                            <code className={`text-[12px] px-2 py-0.5 rounded font-mono ${isDarkMode ? 'bg-[#323130] text-[#60cdff]' : 'bg-[#f3f2f1] text-[#0078d4]'}`}>
+                            <div className="flex flex-col gap-0.5">
+                                <span className={`text-[13px] font-medium ${isDarkMode ? 'text-[#e1dfdd]' : 'text-[#323130]'}`}>Max Length</span>
+                                <span className={`text-[11px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Maximum number of characters allowed.</span>
+                            </div>
+                            <span className={`text-[13px] font-mono font-semibold ${isDarkMode ? 'text-white' : 'text-[#201f1e]'}`}>
+                                {resource.maxLength} chars
+                            </span>
+                        </div>
+
+                        {/* Abbreviation */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex flex-col gap-0.5">
+                                <span className={`text-[13px] font-medium ${isDarkMode ? 'text-[#e1dfdd]' : 'text-[#323130]'}`}>Recommended Abbrev</span>
+                                <span className={`text-[11px] ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>Common abbreviation for this resource type.</span>
+                            </div>
+                            <code className={`text-[12px] px-2 py-0.5 rounded font-mono border ${isDarkMode ? 'bg-[#323130] text-[#60cdff] border-[#605e5c]' : 'bg-[#f3f2f1] text-[#0078d4] border-[#e1dfdd]'}`}>
                                 {resource.abbrev}{selectedSubResource ? `-${selectedSubResource}` : ''}
                             </code>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className={`text-[13px] ${isDarkMode ? 'text-[#c8c6c4]' : 'text-[#605e5c]'}`}>Characters</span>
-                            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+
+                        {/* Characters */}
+                        <div className="flex items-start justify-between">
+                            <div className="flex flex-col gap-0.5 max-w-[40%]">
+                                <span className={`text-[13px] font-medium ${isDarkMode ? 'text-[#e1dfdd]' : 'text-[#323130]'}`}>Allowed Characters</span>
+                                <span className={`text-[11px] leading-tight ${isDarkMode ? 'text-[#a19f9d]' : 'text-[#605e5c]'}`}>
+                                    Only the characters shown here are permitted in the name.
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 flex-wrap justify-end max-w-[55%]">
                                 {resource.chars?.split(',').map((char, i) => (
-                                    <span key={i} className={`text-[11px] px-1.5 py-0.5 rounded font-mono ${isDarkMode ? 'bg-[#323130] text-[#c8c6c4]' : 'bg-[#f3f2f1] text-[#605e5c]'}`}>{char.trim()}</span>
+                                    <span key={i} className={`text-[11px] px-2 py-1 rounded font-mono font-medium min-w-[24px] text-center border ${isDarkMode ? 'bg-[#323130] text-[#e1dfdd] border-[#605e5c]' : 'bg-[#f3f2f1] text-[#323130] border-[#e1dfdd]'}`}>
+                                        {char.trim()}
+                                    </span>
                                 ))}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-        </div >
+        </div>
     );
 }
 

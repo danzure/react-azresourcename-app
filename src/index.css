@@ -17,7 +17,7 @@ body,
 }
 
 body {
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+    @apply font-sans antialiased text-[#242424];
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }

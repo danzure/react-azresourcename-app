@@ -4,6 +4,36 @@ import Tooltip from './Tooltip';
 import { AZURE_REGIONS, ENVIRONMENTS } from '../data/constants';
 import PropTypes from 'prop-types';
 
+/**
+ * Configuration Panel Component
+ * 
+ * Displays the main configuration form for defining resource naming parameters:
+ * - Organization Prefix, Workload, Environment, Region, Instance
+ * - Pattern Builder: Allows reordering of naming segments
+ * - Live Preview: Shows the current naming schema
+ * 
+ * @param {Object} props - Component props
+ * @param {boolean} props.isDarkMode - Current theme state
+ * @param {boolean} props.isMinimized - Panel minimization state
+ * @param {Function} props.onToggleMinimize - Handler to toggle minimization
+ * @param {string} props.workload - Workload name
+ * @param {Function} props.setWorkload - State setter for workload
+ * @param {string} props.envValue - Selected environment value
+ * @param {Function} props.setEnvValue - State setter for environment
+ * @param {string} props.regionValue - Selected region value
+ * @param {Function} props.setRegionValue - State setter for region
+ * @param {string} props.instance - Instance number
+ * @param {Function} props.onInstanceChange - Handler for instance changes
+ * @param {string} props.orgPrefix - Organization prefix
+ * @param {Function} props.setOrgPrefix - State setter for org prefix
+ * @param {boolean} props.showOrg - Toggle state for org prefix visibility
+ * @param {Function} props.setShowOrg - State setter for showOrg
+ * @param {string[]} props.namingOrder - Array defining the order of naming segments
+ * @param {Function} props.onMoveItem - Handler to reorder naming segments
+ * @param {string} props.liveSchemaStr - Generated schema string for preview
+ * @param {string|null} props.copiedId - ID of the currently copied item for feedback
+ * @param {Function} props.onCopy - Copy handler
+ */
 export default function ConfigPanel({
     isDarkMode, isMinimized, onToggleMinimize,
     workload, setWorkload, envValue, setEnvValue, regionValue, setRegionValue,
@@ -141,6 +171,11 @@ export default function ConfigPanel({
                                     <span className="hidden sm:inline">— </span>Customize segment order for your naming convention
                                 </span>
                             </div>
+
+                            {/* Pattern Builder Section
+                                Allows users to drag/move segments of the naming convention.
+                                The order defined here is used by generateName() in App.jsx.
+                            */}
                             {/* Sequence items - vertical on mobile, horizontal on larger screens */}
                             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
                                 {namingOrder.map((item, index) => (

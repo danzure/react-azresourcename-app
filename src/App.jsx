@@ -9,7 +9,17 @@ import useLocalStorage from './hooks/useLocalStorage';
 
 import { AZURE_REGIONS, RESOURCE_DATA_SORTED, CATEGORIES } from './data/constants';
 
+/**
+ * Main Application Component
+ * 
+ * Manages global state for the Azure Resource Naming Tool, including:
+ * - Theme preferences (Light/Dark mode)
+ * - Naming configuration (Workload, Environment, Region, Instance)
+ * - Search filtering and active category selection
+ * - Resource data and generation logic
+ */
 export default function App() {
+    // Persistent state using local storage for user preferences
     const [isDarkMode, setIsDarkMode] = useLocalStorage('azres_darkMode', false);
     const [isConfigMinimized, setIsConfigMinimized] = useState(false);
 
@@ -31,9 +41,12 @@ export default function App() {
     const searchInputRef = useRef(null);
 
     // Debounce search term to prevent expensive filtering on every keystroke
+    // Delays search execution by 300ms until user stops typing
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-    // Keyboard shortcuts
+    // Keyboard shortcuts handler
+    // - Escape: Close expanded cards or clear search
+    // - Ctrl+K / Forward Slash: Focus search input
     useEffect(() => {
         const handleKeyDown = (e) => {
             // Escape to close expanded card or clear search
@@ -100,6 +113,13 @@ export default function App() {
         if (val.length <= 3) setInstance(val);
     }, []);
 
+    /**
+     * Generates a compliant Azure resource name based on configuration and resource specific rules.
+     * 
+     * @param {Object} resource - The resource definition object from constants.js
+     * @param {string} [selectedSubResource=null] - Optional suffix for sub-resources (e.g., 'vnet-hub')
+     * @returns {string} The generated resource name
+     */
     const generateName = useCallback((resource, selectedSubResource = null) => {
         let resAbbrev = resource.abbrev || "res";
 
