@@ -95,8 +95,9 @@ const ServiceFilter = ({ activeCategory, onCategoryChange, categories, isDarkMod
                 style={{
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
-                    // Optional: Mask to show scroll hint
-                    maskImage: 'linear-gradient(to right, transparent, black 20px, black 95%, transparent)'
+                    // Dynamic mask to show scroll hint only when needed
+                    maskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 40px, black calc(100% - 40px), ${canScrollRight ? 'transparent' : 'black'} 100%)`,
+                    WebkitMaskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 40px, black calc(100% - 40px), ${canScrollRight ? 'transparent' : 'black'} 100%)`
                 }}
             >
                 {categories.map(cat => (
