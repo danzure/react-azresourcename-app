@@ -1,11 +1,10 @@
-import { memo } from 'react';
+import { memo, useState, useMemo } from 'react';
 import { Box, Copy, Check, ShieldAlert, LayoutGrid, Cpu, Network, Database, Globe, DatabaseZap, ShieldCheck, Workflow, BarChart3, BrainCircuit, Settings2, Wifi, GitBranch } from 'lucide-react';
 import ValidationHighlight from './ValidationHighlight';
 import ExpandedPanel from './ExpandedPanel';
 import { getCategoryColors } from '../data/categoryColors';
 import { getBundleResources } from '../utils/bundleGenerator';
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
 
 const CATEGORY_ICONS = {
     'General': LayoutGrid,
@@ -38,7 +37,7 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, isTooLong, 
         });
     };
 
-    const bundle = getBundleResources(resource, topology, selectedSpokes);
+    const bundle = useMemo(() => getBundleResources(resource, topology, selectedSpokes), [resource, topology, selectedSpokes]);
     const hasBundle = bundle && bundle.length > 0;
 
     // Helper to generate name - utilizing the passed generateName function with modified resource context

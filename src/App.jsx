@@ -71,17 +71,22 @@ export default function App() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [expandedCard, searchTerm]);
 
-    // Scroll-to-top visibility and Infinite Scroll
+    // Scroll-to-top visibility and Infinite Scroll (throttled with rAF)
     useEffect(() => {
+        let ticking = false;
         const handleScroll = () => {
-            setShowScrollTop(window.scrollY > 200);
-
-            // Infinite scroll: load more when near bottom
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                setVisibleCount(prev => Math.min(prev + 24, 1000)); // Load next 24 items, cap at sensible MAX
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setShowScrollTop(window.scrollY > 200);
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                        setVisibleCount(prev => Math.min(prev + 24, 1000));
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         };
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -236,13 +241,13 @@ export default function App() {
         <div className={`min-h-screen font-sans transition-colors duration-200 ${isDarkMode ? 'bg-[#111009] text-white' : 'bg-[#faf9f8] text-[#242424]'}`}>
             <Header
                 isDarkMode={isDarkMode}
-                onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+                onToggleTheme={() => setIsDarkMode(prev => !prev)}
             />
 
             <ConfigPanel
                 isDarkMode={isDarkMode}
                 isMinimized={isConfigMinimized}
-                onToggleMinimize={() => setIsConfigMinimized(!isConfigMinimized)}
+                onToggleMinimize={() => setIsConfigMinimized(prev => !prev)}
                 workload={workload}
                 setWorkload={setWorkload}
                 envValue={envValue}

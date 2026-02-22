@@ -14,13 +14,18 @@ const ServiceFilter = ({ activeCategory, onCategoryChange, categories, isDarkMod
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
 
+    const checkScrollRef = useRef(false);
     const checkScroll = () => {
-        if (scrollContainerRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-            setCanScrollLeft(scrollLeft > 0);
-            // Use a small tolerance (1px) for float calculation differences
-            setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
-        }
+        if (checkScrollRef.current) return;
+        checkScrollRef.current = true;
+        requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+                const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+                setCanScrollLeft(scrollLeft > 0);
+                setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+            }
+            checkScrollRef.current = false;
+        });
     };
 
     // Correctly initialize scroll state and attach listeners

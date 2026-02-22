@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ChevronDown, ChevronUp, Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy, Check, Layers, Info, Globe } from 'lucide-react';
 import SearchableSelect from './SearchableSelect';
 import Tooltip from './Tooltip';
@@ -34,7 +35,7 @@ import PropTypes from 'prop-types';
  * @param {string|null} props.copiedId - ID of the currently copied item for feedback
  * @param {Function} props.onCopy - Copy handler
  */
-export default function ConfigPanel({
+function ConfigPanel({
     isDarkMode, isMinimized, onToggleMinimize,
     workload, setWorkload, envValue, setEnvValue, regionValue, setRegionValue,
     instance, onInstanceChange, orgPrefix, setOrgPrefix, showOrg, setShowOrg,
@@ -260,3 +261,5 @@ ConfigPanel.propTypes = {
     copiedId: PropTypes.string,
     onCopy: PropTypes.func.isRequired,
 };
+
+export default memo(ConfigPanel);

@@ -12,7 +12,10 @@
     "globalHeaders": {
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; font-src 'self' https://fonts.cdnfonts.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+        "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; font-src 'self' https://fonts.cdnfonts.com; script-src 'self'; img-src 'self' data:;",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "X-XSS-Protection": "0"
     },
     "mimeTypes": {
         ".json": "application/json"

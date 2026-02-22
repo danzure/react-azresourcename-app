@@ -6,7 +6,7 @@ export default function Tooltip({ content, children, isDarkMode }) {
     return (
         <div className="relative group">
             {children}
-            <div className={`absolute left-0 top-full mt-1 px-2 py-1 text-[11px] rounded shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 ${isDarkMode ? 'bg-[#323130] text-white' : 'bg-[#323130] text-white'}`}>
+            <div className={`absolute left-0 top-full mt-1 px-2 py-1 text-[11px] rounded shadow-lg whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 ${isDarkMode ? 'bg-[#323130] text-white' : 'bg-[#242424] text-white'}`}>
                 {content}
             </div>
         </div>

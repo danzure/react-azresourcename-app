@@ -20,16 +20,39 @@ export default function ValidationHighlight({ name, allowedCharsPattern, isDarkM
         return (char) => regex.test(char);
     }, [allowedCharsPattern]);
 
+    // Group consecutive valid characters into single text nodes to reduce DOM elements
+    const segments = useMemo(() => {
+        const result = [];
+        let validBuffer = '';
+        for (let i = 0; i < name.length; i++) {
+            const char = name[i];
+            if (validator(char)) {
+                validBuffer += char;
+            } else {
+                if (validBuffer) {
+                    result.push({ type: 'valid', text: validBuffer });
+                    validBuffer = '';
+                }
+                result.push({ type: 'invalid', text: char });
+            }
+        }
+        if (validBuffer) {
+            result.push({ type: 'valid', text: validBuffer });
+        }
+        return result;
+    }, [name, validator]);
+
     return (
         <span className="font-mono">
-            {name.split('').map((char, i) => {
-                const isValid = validator(char);
-                return (
-                    <span key={i} className={isValid ? '' : `${isDarkMode ? 'text-[#f1707b]' : 'text-[#a80000]'} font-bold underline decoration-wavy`} title={isValid ? '' : `Invalid: '${char}'`}>
-                        {char}
+            {segments.map((seg, i) =>
+                seg.type === 'valid' ? (
+                    seg.text
+                ) : (
+                    <span key={i} className={`${isDarkMode ? 'text-[#f1707b]' : 'text-[#a80000]'} font-bold underline decoration-wavy`} title={`Invalid: '${seg.text}'`}>
+                        {seg.text}
                     </span>
-                );
-            })}
+                )
+            )}
         </span>
     );
 }
