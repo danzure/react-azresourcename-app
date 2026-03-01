@@ -5,7 +5,7 @@ export default function Header({ isDarkMode, onToggleTheme }) {
     return (
         <header className={`h-[48px] flex items-center justify-between px-5 border-b z-50 fixed top-0 w-full ${isDarkMode ? 'bg-[#1b1a19] border-[#323130]' : 'bg-primary-gradient border-transparent text-white shadow-soft'}`}>
             <div className="flex items-center gap-4">
-                <span className="font-semibold text-[16px] text-white tracking-tight">a-z-ure.namer</span>
+                <span className="font-semibold text-[16px] text-white tracking-tight">a-zurenamer</span>
             </div>
             <button
                 onClick={onToggleTheme}

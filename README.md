@@ -1,4 +1,4 @@
-# a-z-urenamer 🌐
+# a-zurenamer 🌐
 
 A modern, web-based tool for generating **Microsoft Cloud Adoption Framework (CAF)** compliant names for Azure resources. 
 
