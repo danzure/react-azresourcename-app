@@ -35,6 +35,7 @@ export default function FluentDropdown({
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const [openUpward, setOpenUpward] = useState(false);
     const containerRef = useRef(null);
     const listboxRef = useRef(null);
 
@@ -60,28 +61,48 @@ export default function FluentDropdown({
         return normalizedOptions.find(opt => opt.value === value) || null;
     }, [normalizedOptions, value]);
 
-    // Handle outside click to close
+    // Handle outside click to close and close when another dropdown opens
     useEffect(() => {
         function handleClickOutside(event) {
             if (containerRef.current && !containerRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
         }
+        function handleOtherDropdownOpen(event) {
+            if (event.detail && event.detail !== containerRef.current) {
+                setIsOpen(false);
+            }
+        }
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside);
+            window.addEventListener('fluent-dropdown-open', handleOtherDropdownOpen);
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('fluent-dropdown-open', handleOtherDropdownOpen);
         };
     }, [isOpen]);
 
-    // Reset highlighted index when opening/closing
+    // Reset highlighted index when opening/closing and compute placement
     useEffect(() => {
         if (isOpen) {
             const currentIdx = normalizedOptions.findIndex(opt => opt.value === value);
             setHighlightedIndex(currentIdx >= 0 ? currentIdx : 0);
+
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceAbove = rect.top;
+                const estimatedMenuHeight = Math.min(normalizedOptions.length * 36 + 10, 260);
+                if (spaceBelow < estimatedMenuHeight && spaceAbove > spaceBelow) {
+                    setOpenUpward(true);
+                } else {
+                    setOpenUpward(false);
+                }
+            }
         } else {
             setHighlightedIndex(-1);
+            setOpenUpward(false);
         }
     }, [isOpen, normalizedOptions, value]);
 
@@ -94,6 +115,17 @@ export default function FluentDropdown({
             }
         }
     }, [isOpen, highlightedIndex]);
+
+    const toggleOpen = useCallback(() => {
+        if (disabled) return;
+        setIsOpen(prev => {
+            const next = !prev;
+            if (next && containerRef.current) {
+                window.dispatchEvent(new CustomEvent('fluent-dropdown-open', { detail: containerRef.current }));
+            }
+            return next;
+        });
+    }, [disabled]);
 
     const handleSelect = useCallback((val) => {
         if (disabled) return;
@@ -108,6 +140,9 @@ export default function FluentDropdown({
             if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
                 e.preventDefault();
                 setIsOpen(true);
+                if (containerRef.current) {
+                    window.dispatchEvent(new CustomEvent('fluent-dropdown-open', { detail: containerRef.current }));
+                }
             }
             return;
         }
@@ -168,12 +203,12 @@ export default function FluentDropdown({
     return (
         <div 
             ref={containerRef} 
-            className={`relative inline-block min-w-0 ${className}`}
+            className={`relative inline-block min-w-0 ${isOpen ? 'z-50' : ''} ${className}`}
         >
             <button
                 type="button"
                 disabled={disabled}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleOpen}
                 onKeyDown={handleKeyDown}
                 role="combobox"
                 aria-expanded={isOpen}
@@ -201,7 +236,7 @@ export default function FluentDropdown({
                     ref={listboxRef}
                     role="listbox"
                     aria-label={ariaLabel}
-                    className={`absolute top-[100%] left-0 z-50 min-w-full w-max max-w-[420px] max-h-[260px] overflow-y-auto mt-1 rounded bg-fluent-bg-card border border-fluent-stroke-subtle shadow-flyout py-1 animate-fade-in ${flyoutClassName}`}
+                    className={`absolute ${openUpward ? 'bottom-[100%] mb-1' : 'top-[100%] mt-1'} left-0 z-50 min-w-full w-max max-w-[420px] max-h-[260px] overflow-y-auto rounded bg-fluent-bg-card border border-fluent-stroke-subtle shadow-flyout py-1 animate-fade-in ${flyoutClassName}`}
                 >
                     {normalizedOptions.length === 0 ? (
                         <div className={`px-3 py-2 ${textClass} text-fluent-fg-tertiary`}>

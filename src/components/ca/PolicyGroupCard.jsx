@@ -129,9 +129,9 @@ SettingLineItem.propTypes = {
 };
 
 /**
- * Component to render grouped policy settings in the Entra Blueprint view.
+ * Component to render grouped policy settings in the Entra Template view.
  */
-function BlueprintSettingBlock({ label, value }) {
+function TemplateSettingBlock({ label, value }) {
     const lines = useMemo(() => value.split('\n').filter(Boolean), [value]);
 
     return (
@@ -148,7 +148,7 @@ function BlueprintSettingBlock({ label, value }) {
     );
 }
 
-BlueprintSettingBlock.propTypes = {
+TemplateSettingBlock.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
 };
@@ -159,14 +159,14 @@ BlueprintSettingBlock.propTypes = {
  * Renders a standardized Microsoft Entra Conditional Access policy card with:
  * - Clear human-readable title and target persona selector
  * - Standardized CAF naming bar with 1-click clipboard integration
- * - Interactive Entra Portal Blueprint showing Assignments & Access Controls
+ * - Interactive Entra Portal Template showing Assignments & Access Controls
  * - Infrastructure-as-Code export tab for Microsoft Graph PowerShell & JSON
  * - Implementation guidance, prerequisites, and licensing tier requirements
  */
 function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalExpandState }) {
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [activeTab, setActiveTab] = useState('blueprint'); // 'blueprint' | 'script'
+    const [activeTab, setActiveTab] = useState('template'); // 'template' | 'script'
     const [scriptFormat, setScriptFormat] = useState('powershell'); // 'powershell' | 'json'
     const [scriptCopied, setScriptCopied] = useState(false);
 
@@ -333,7 +333,7 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
                                 aria-expanded={isExpanded}
                             >
                                 <Settings2 className="w-3.5 h-3.5 text-fluent-brand-fg" />
-                                <span>{isExpanded ? 'Hide Blueprint' : 'View Blueprint'}</span>
+                                <span>{isExpanded ? 'Hide Template' : 'View Template'}</span>
                                 {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                             </button>
                         )}
@@ -358,7 +358,7 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
                 </div>
             </div>
 
-            {/* Expanded Blueprint / Script View */}
+            {/* Expanded Template / Script View */}
             {isExpanded && activePolicy.settings && (
                 <div className="border-t border-fluent-stroke-subtle bg-fluent-bg-canvas rounded-b-lg p-4 sm:p-5 flex flex-col gap-4">
                     
@@ -367,14 +367,14 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
                         <div className="flex shrink-0 bg-fluent-bg-canvas border border-fluent-stroke-subtle rounded-md p-0.5 w-full sm:w-auto" role="tablist">
                             <button
                                 role="tab"
-                                aria-selected={activeTab === 'blueprint'}
-                                onClick={() => setActiveTab('blueprint')}
-                                className={`flex-1 sm:flex-none text-[12px] px-3 py-1.5 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'blueprint' 
+                                aria-selected={activeTab === 'template'}
+                                onClick={() => setActiveTab('template')}
+                                className={`flex-1 sm:flex-none text-[12px] px-3 py-1.5 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'template' 
                                     ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm border border-fluent-stroke-subtle' 
                                     : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover border border-transparent'}`}
                             >
                                 <Sliders className="w-3.5 h-3.5" />
-                                Entra Portal Blueprint
+                                Entra Portal Template
                             </button>
                             <button
                                 role="tab"
@@ -391,12 +391,12 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
 
                         <div className="flex items-center gap-2 text-[12px] text-fluent-fg-tertiary">
                             <Layers className="w-3.5 h-3.5 text-fluent-brand-fg shrink-0" />
-                            <span className="font-medium text-fluent-fg-secondary">Policy Configuration Blueprint</span>
+                            <span className="font-medium text-fluent-fg-secondary">Policy Configuration Template</span>
                         </div>
                     </div>
 
-                    {/* Tab 1: Entra Portal Blueprint */}
-                    {activeTab === 'blueprint' && (
+                    {/* Tab 1: Entra Portal Template */}
+                    {activeTab === 'template' && (
                         <div className="flex flex-col gap-4">
                             
                             {/* Prerequisites / Safety Banner (if applicable) */}
@@ -433,7 +433,7 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
                                         </div>
                                         <div className="p-4 divide-y divide-fluent-stroke-subtle flex flex-col flex-1">
                                             {assignments.map((setting, idx) => (
-                                                <BlueprintSettingBlock 
+                                                <TemplateSettingBlock 
                                                     key={idx} 
                                                     label={setting.label} 
                                                     value={setting.value} 
@@ -461,7 +461,7 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
                                         </div>
                                         <div className="p-4 divide-y divide-fluent-stroke-subtle flex flex-col flex-1">
                                             {accessControls.map((setting, idx) => (
-                                                <BlueprintSettingBlock 
+                                                <TemplateSettingBlock 
                                                     key={idx} 
                                                     label={setting.label} 
                                                     value={setting.value} 

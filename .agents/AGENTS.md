@@ -127,7 +127,7 @@ To ensure visual consistency, always use the following `lucide-react` icons for 
 | `Star` | "New" feature indicator badge. |
 | `ShieldCheck` / `Shield` | Security, RBAC, Conditional Access contexts. |
 | `Network` / `Layers` | Architecture, topology, Management Groups contexts. |
-| `Settings2` | Global settings, expanding/collapsing all blueprints or panels. |
+| `Settings2` | Global settings, expanding/collapsing all templates or panels. |
 | `RefreshCw` | Resetting to defaults or refreshing data. |
 
 #### 2.7 Badges & Semantic Colours Register

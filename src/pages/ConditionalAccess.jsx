@@ -120,7 +120,7 @@ export default function ConditionalAccessPage() {
                         className="px-3 h-[32px] rounded-[4px] border border-fluent-stroke-strong bg-fluent-bg-card text-fluent-fg-secondary hover:text-fluent-fg-primary hover:border-fluent-fg-primary hover:bg-fluent-bg-hover transition-all duration-200 ease-in-out inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50"
                     >
                         <Settings2 className="w-3.5 h-3.5 text-fluent-brand-fg" />
-                        {globalExpandState ? 'Collapse All Blueprints' : 'Expand All Blueprints'}
+                        {globalExpandState ? 'Collapse All Templates' : 'Expand All Templates'}
                     </button>
                 </div>
 
