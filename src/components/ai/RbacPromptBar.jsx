@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, forwardRef } from 'react';
-import { Sparkles, ArrowRight, Loader2, X, RefreshCw, ChevronLeft, ChevronRight, CheckCircle2, Lightbulb, ShieldCheck } from 'lucide-react';
+import { Sparkles, ArrowRight, Loader2, X, ChevronLeft, ChevronRight, CheckCircle2, Lightbulb, ShieldCheck } from 'lucide-react';
 import PropTypes from 'prop-types';
+import ResetButton from '../shared/ResetButton';
 import { generateRbacRoleFallback } from '../../utils/rbacAiFallback';
 import { trackEvent, trackException } from '../../utils/telemetry';
 
@@ -157,7 +158,7 @@ const RbacPromptBar = forwardRef(({
     ];
 
     return (
-        <div className="w-full mb-2 group relative z-30">
+        <div className="w-full mb-2 relative z-30">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2 ml-0.5 sm:ml-1">
                 <div className="flex items-center justify-between w-full sm:w-auto">
                     <div className="flex items-center gap-2">
@@ -169,36 +170,32 @@ const RbacPromptBar = forwardRef(({
                         </span>
                     </div>
                     {onResetAll && (
-                        <button
-                            type="button"
+                        <ResetButton
                             onClick={handleReset}
-                            className="sm:hidden text-[12px] flex items-center gap-1.5 text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover font-medium px-2.5 h-[30px] rounded-[4px] border border-transparent hover:border-fluent-stroke-subtle transition-all duration-200 ease-in-out active:scale-[0.97] touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50"
                             title="Reset custom role configuration"
+                            className="sm:hidden"
                         >
-                            <RefreshCw className="w-3.5 h-3.5" />
                             Reset Role
-                        </button>
+                        </ResetButton>
                     )}
                 </div>
                 <span className="sm:hidden text-[11px] text-fluent-fg-secondary leading-tight">
                     AI-generated configurations should be reviewed before deployment.
                 </span>
                 {onResetAll && (
-                    <button
-                        type="button"
+                    <ResetButton
                         onClick={handleReset}
-                        className="hidden sm:flex text-[12px] items-center gap-1.5 text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover font-medium px-2.5 h-[26px] rounded-[4px] transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50"
                         title="Reset custom role configuration"
+                        className="hidden sm:inline-flex"
                     >
-                        <RefreshCw className="w-3.5 h-3.5" />
                         Reset Role
-                    </button>
+                    </ResetButton>
                 )}
             </div>
 
-            <form onSubmit={handleSubmit} className="relative flex items-center w-full">
+            <form onSubmit={handleSubmit} className="relative flex items-center w-full group">
                 {/* Glow effect behind the bar */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-fluent-brand-bg to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-fluent-brand-bg to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity duration-200 ease-in-out" />
                 
                 <div className="relative flex items-center w-full h-[50px] sm:h-[52px] bg-fluent-bg-card rounded-lg border border-fluent-stroke-subtle shadow-soft focus-within:border-fluent-brand-bg focus-within:ring-2 focus-within:ring-fluent-brand-bg/20 transition-all duration-200 ease-in-out overflow-hidden">
                     

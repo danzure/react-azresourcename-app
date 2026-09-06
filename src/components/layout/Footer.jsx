@@ -17,7 +17,7 @@ export default function Footer() {
                 {/* Left Side: Brand & Copyright */}
                 <div className="flex items-center gap-3 shrink-0">
                     {/* Brand logo */}
-                    <div className="flex items-center justify-center w-8 h-8 transition-transform duration-300 hover:scale-105 active:scale-95">
+                    <div className="flex items-center justify-center w-8 h-8 transition-transform duration-200 ease-in-out hover:scale-105 active:scale-95">
                         <img src="/atozazure-favicon-192x192.png" alt="atozazure logo" className="w-7 h-7 object-contain" />
                     </div>
 
@@ -52,7 +52,7 @@ export default function Footer() {
                                 rel="noopener noreferrer"
                                 className="group relative flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] text-[12.5px] font-medium bg-fluent-cat-yellow-bg text-fluent-cat-yellow-fg hover:opacity-90 border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg transition-all duration-150 active:scale-98 shadow-xs"
                             >
-                                <Coffee className="w-3.5 h-3.5 text-fluent-cat-yellow-fg shrink-0 group-hover:-rotate-12 group-hover:scale-110 transition-transform duration-300 ease-out" />
+                                <Coffee className="w-3.5 h-3.5 text-fluent-cat-yellow-fg shrink-0 group-hover:-rotate-6 group-hover:scale-105 transition-transform duration-200 ease-in-out" />
                                 <span>Buy me a Coffee</span>
 
                                 {/* Subtle glowing indicator dot */}
@@ -69,7 +69,7 @@ export default function Footer() {
                             rel="noopener noreferrer"
                             className="group relative flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] text-[12.5px] font-medium bg-fluent-cat-blue-bg text-fluent-cat-blue-fg hover:opacity-90 border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg transition-all duration-150 active:scale-98 shadow-xs"
                         >
-                            <User className="w-3.5 h-3.5 text-fluent-cat-blue-fg shrink-0 group-hover:-rotate-12 group-hover:scale-110 transition-transform duration-300 ease-out" />
+                            <User className="w-3.5 h-3.5 text-fluent-cat-blue-fg shrink-0 group-hover:-rotate-6 group-hover:scale-105 transition-transform duration-200 ease-in-out" />
                             <span>About me</span>
                         </a>
                     </div>

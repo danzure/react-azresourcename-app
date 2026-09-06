@@ -114,6 +114,18 @@
     select:focus:not(:focus-visible) {
         outline: none;
     }
+
+    /* Fluent 2 reduced motion accessibility support */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }
 
 html,
@@ -133,43 +145,43 @@ body {
 /* Stagger animations for grid items */
 @layer utilities {
     .stagger-1 {
-        animation-delay: 50ms;
+        animation-delay: 25ms;
     }
 
     .stagger-2 {
-        animation-delay: 100ms;
+        animation-delay: 50ms;
     }
 
     .stagger-3 {
-        animation-delay: 150ms;
+        animation-delay: 75ms;
     }
 
     .stagger-4 {
-        animation-delay: 200ms;
+        animation-delay: 100ms;
     }
 
     .stagger-5 {
-        animation-delay: 250ms;
+        animation-delay: 125ms;
     }
 
     .stagger-6 {
-        animation-delay: 300ms;
+        animation-delay: 150ms;
     }
 
     .stagger-7 {
-        animation-delay: 350ms;
+        animation-delay: 175ms;
     }
 
     .stagger-8 {
-        animation-delay: 400ms;
+        animation-delay: 200ms;
     }
 
     .stagger-9 {
-        animation-delay: 450ms;
+        animation-delay: 225ms;
     }
 
     .stagger-10 {
-        animation-delay: 500ms;
+        animation-delay: 250ms;
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */

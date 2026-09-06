@@ -1,7 +1,8 @@
 import { memo } from 'react';
-import { Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy, Check, Layers, RefreshCw } from 'lucide-react';
+import { Edit3, Eye, EyeOff, ArrowLeft, ArrowRight, Copy, Check, Layers } from 'lucide-react';
 import SearchableSelect from '../shared/SearchableSelect';
 import Tooltip from '../shared/Tooltip';
+import ResetButton from '../shared/ResetButton';
 import { AZURE_REGIONS, ENVIRONMENTS } from '../../data/constants';
 import PropTypes from 'prop-types';
 
@@ -34,22 +35,19 @@ function ConfigPanel({
     onResetDefaults
 }) {
     return (
-        <div className="animate-slide-up bg-fluent-bg-card rounded-lg border border-fluent-stroke-subtle shadow-soft p-4 flex flex-col gap-4">
+        <div className="relative z-40 animate-slide-up bg-fluent-bg-card rounded-lg border border-fluent-stroke-subtle shadow-soft p-4 flex flex-col gap-4">
             {/* Header / Actions */}
             <div className="flex items-center justify-between border-b border-fluent-stroke-subtle pb-2">
                 <div className="flex items-center gap-2">
                     <Edit3 className="w-4 h-4 text-fluent-brand-fg" />
                     <h3 className="text-[14px] font-semibold text-fluent-fg-primary">Naming Parameters</h3>
                 </div>
-                <button
-                    type="button"
+                <ResetButton
                     onClick={onResetDefaults}
-                    className="text-[12px] flex items-center gap-1.5 text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover font-medium px-2.5 h-[26px] rounded-[4px] transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50"
                     title="Reset to default naming configuration"
                 >
-                    <RefreshCw className="w-3.5 h-3.5" />
                     Reset Defaults
-                </button>
+                </ResetButton>
             </div>
 
             {/* Form grid - 2 columns on large screens to cleanly fill whitespace */}
@@ -71,7 +69,7 @@ function ConfigPanel({
                         <button
                             type="button"
                             onClick={() => setShowOrg(!showOrg)}
-                            className={`h-[32px] flex items-center justify-center rounded-[4px] border transition-colors shrink-0 px-2.5 gap-1.5 ${showOrg ? 'bg-fluent-brand-bg border-fluent-brand-bg text-white' : 'bg-fluent-bg-canvas border-fluent-stroke-strong text-fluent-fg-secondary hover:border-fluent-fg-primary'}`}
+                            className={`h-[32px] flex items-center justify-center rounded-[4px] border transition-all duration-200 ease-in-out active:scale-95 shrink-0 px-2.5 gap-1.5 ${showOrg ? 'bg-fluent-brand-bg border-fluent-brand-bg text-white' : 'bg-fluent-bg-canvas border-fluent-stroke-strong text-fluent-fg-secondary hover:border-fluent-fg-primary'}`}
                             title={showOrg ? 'Disable Org' : 'Enable Org'}
                         >
                             {showOrg ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -118,7 +116,7 @@ function ConfigPanel({
                             target="_blank"
                             rel="noopener noreferrer"
                             title="View Azure Infrastructure Map"
-                            className="h-[32px] flex items-center justify-center rounded-[4px] border transition-colors shrink-0 px-2.5 gap-1.5 no-underline bg-fluent-bg-canvas border-fluent-stroke-strong text-fluent-fg-secondary hover:border-fluent-fg-primary"
+                            className="h-[32px] flex items-center justify-center rounded-[4px] border transition-all duration-200 ease-in-out active:scale-95 shrink-0 px-2.5 gap-1.5 no-underline bg-fluent-bg-canvas border-fluent-stroke-strong text-fluent-fg-secondary hover:border-fluent-fg-primary"
                         >
                             <svg viewBox="0 0 23 23" className="w-3.5 h-3.5 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h11v11H0z" fill="#f35325"/>
@@ -204,7 +202,7 @@ function ConfigPanel({
                         <button
                             type="button"
                             onClick={onCopy}
-                            className={`shrink-0 h-[26px] px-2.5 rounded-[4px] text-[12px] font-medium transition-all flex items-center gap-1.5 border ${copiedId === 'live-pill'
+                            className={`shrink-0 h-[26px] px-2.5 rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out active:scale-95 flex items-center gap-1.5 border ${copiedId === 'live-pill'
                                 ? 'bg-[#f1faf1] dark:bg-[#1b2b1b] border-[#c6ebc9] dark:border-[#1e4620] text-[#107c10] dark:text-[#a3d4a3]'
                                 : 'bg-fluent-bg-card border-fluent-stroke-subtle text-fluent-fg-secondary hover:border-fluent-stroke-strong hover:text-fluent-fg-primary'
                                 }`}

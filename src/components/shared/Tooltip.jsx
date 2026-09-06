@@ -47,7 +47,7 @@ export default function Tooltip({ content, align = 'left', textAlign, position =
     return (
         <div className={`relative group ${className}`}>
             {children}
-            <div className={`absolute z-50 px-2.5 py-1.5 rounded-[4px] bg-fluent-bg-subtle border border-fluent-stroke-subtle shadow-flyout text-[12px] text-fluent-fg-primary font-medium pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity w-max max-w-[min(290px,calc(100vw-24px))] sm:max-w-[320px] whitespace-normal leading-snug ${resolvedTextAlign} ${positionClasses} ${tooltipClassName}`}>
+            <div className={`absolute z-50 px-2.5 py-1.5 rounded-[4px] bg-fluent-bg-subtle border border-fluent-stroke-subtle shadow-flyout text-[12px] text-fluent-fg-primary font-medium pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-in-out w-max max-w-[min(290px,calc(100vw-24px))] sm:max-w-[320px] whitespace-normal leading-snug ${resolvedTextAlign} ${positionClasses} ${tooltipClassName}`}>
                 {content}
             </div>
         </div>

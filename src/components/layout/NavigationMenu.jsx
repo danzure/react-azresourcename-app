@@ -19,8 +19,8 @@ export default function NavigationMenu({ isExpanded, onToggleExpand, isMobile, o
     // On mobile: fixed overlay that slides in/out
     // On desktop: inline sidebar that expands/collapses
     const mobileClasses = isMobile
-        ? `fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300 ease-in-out pt-[48px] pb-[env(safe-area-inset-bottom,0px)] ${isExpanded ? 'translate-x-0' : '-translate-x-full'}`
-        : `relative transition-[width] duration-300 ease-in-out ${isExpanded ? 'w-[280px]' : 'w-[64px]'}`;
+        ? `fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-200 ease-in-out pt-[48px] pb-[env(safe-area-inset-bottom,0px)] ${isExpanded ? 'translate-x-0' : '-translate-x-full'}`
+        : `relative transition-[width] duration-200 ease-in-out ${isExpanded ? 'w-[280px]' : 'w-[64px]'}`;
 
     const handleNavClick = () => {
         if (isMobile && onClose) onClose();
@@ -32,7 +32,7 @@ export default function NavigationMenu({ isExpanded, onToggleExpand, isMobile, o
             aria-label="Navigation menu"
         >
             {/* Header inside drawer */}
-            <div className={`h-[48px] flex items-center border-b border-fluent-stroke-subtle overflow-hidden whitespace-nowrap transition-all duration-300 ${isExpanded ? 'px-4 justify-between' : isMobile ? 'px-4 justify-between' : 'justify-center px-0'}`}>
+            <div className={`h-[48px] flex items-center border-b border-fluent-stroke-subtle overflow-hidden whitespace-nowrap transition-all duration-200 ease-in-out ${isExpanded ? 'px-4 justify-between' : isMobile ? 'px-4 justify-between' : 'justify-center px-0'}`}>
                 {(isExpanded || isMobile) && <span className="font-semibold text-[16px] tracking-tight pl-1">Navigation</span>}
                 {isMobile ? (
                     <button

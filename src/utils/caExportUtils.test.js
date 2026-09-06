@@ -91,6 +91,18 @@ describe('Conditional Access Export Utilities', () => {
 
             expect(result).toContain('built_in_controls = ["passwordChange"]');
         });
+
+        it('escapes quotes and backslashes in policyName for Terraform', () => {
+            const result = generateConditionalAccessTerraform(
+                'CA-Policy "Special"\\Test',
+                'All',
+                'All',
+                'AnyPlatform',
+                'RequireMFA'
+            );
+
+            expect(result).toContain('name  = "CA-Policy \\"Special\\"\\\\Test"');
+        });
     });
 
     describe('generateConditionalAccessJSON', () => {

@@ -1,136 +1,139 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Copy, Check, ExternalLink, Code2 } from 'lucide-react';
+
+const escapeBicep = (str) => (str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+const escapeTf = (str) => (str || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+// Flatten tree into an array of { id, name, parentId, subscriptions }
+function flattenTopology(nodes, parentId = null) {
+    let result = [];
+    nodes.forEach(node => {
+        // Generate a safe identifier for code (alphanumeric and underscores)
+        const safeId = node.id.replace(/[^a-zA-Z0-9]/g, '_');
+        result.push({
+            id: node.id,
+            safeId: safeId,
+            name: node.name,
+            parentId: parentId,
+            subscriptions: node.subscriptions || []
+        });
+        if (node.children && node.children.length > 0) {
+            result = result.concat(flattenTopology(node.children, safeId));
+        }
+    });
+    return result;
+}
+
+function generateBicep(flatNodes) {
+    let code = `targetScope = 'tenant'\n\n`;
+    
+    flatNodes.forEach(node => {
+        code += `resource mg_${node.safeId} 'Microsoft.Management/managementGroups@2021-04-01' = {\n`;
+        code += `  name: '${node.safeId}'\n`;
+        code += `  properties: {\n`;
+        code += `    displayName: '${escapeBicep(node.name)}'\n`;
+        if (node.parentId) {
+            code += `    details: {\n`;
+            code += `      parent: {\n`;
+            code += `        id: tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')\n`;
+            code += `      }\n`;
+            code += `    }\n`;
+        }
+        code += `  }\n`;
+        code += `}\n\n`;
+
+        if (node.subscriptions && node.subscriptions.length > 0) {
+            node.subscriptions.forEach((sub, _index) => {
+                const subSafeId = sub.id.replace(/[^a-zA-Z0-9]/g, '_');
+                code += `resource sub_${subSafeId} 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = {\n`;
+                code += `  parent: mg_${node.safeId}\n`;
+                code += `  name: '${escapeBicep(sub.name)}'\n`;
+                code += `}\n\n`;
+            });
+        }
+    });
+    
+    return code.trim();
+}
+
+function generateTerraform(flatNodes) {
+    let code = `provider "azurerm" {\n  features {}\n}\n\n`;
+    
+    flatNodes.forEach(node => {
+        code += `resource "azurerm_management_group" "${node.safeId}" {\n`;
+        code += `  name         = "${node.safeId}"\n`;
+        code += `  display_name = "${escapeTf(node.name)}"\n`;
+        if (node.parentId) {
+            code += `  parent_management_group_id = azurerm_management_group.${node.parentId}.id\n`;
+        }
+        code += `}\n\n`;
+
+        if (node.subscriptions && node.subscriptions.length > 0) {
+            node.subscriptions.forEach((sub, _index) => {
+                const subSafeId = sub.id.replace(/[^a-zA-Z0-9]/g, '_');
+                code += `data "azurerm_subscription" "sub_${subSafeId}" {\n`;
+                code += `  subscription_id = "${escapeTf(sub.name)}"\n`;
+                code += `}\n\n`;
+                code += `resource "azurerm_management_group_subscription_association" "assoc_${subSafeId}" {\n`;
+                code += `  management_group_id = azurerm_management_group.${node.safeId}.id\n`;
+                code += `  subscription_id     = data.azurerm_subscription.sub_${subSafeId}.id\n`;
+                code += `}\n\n`;
+            });
+        }
+    });
+    
+    return code.trim();
+}
+
+function generateArm(flatNodes) {
+    let code = {
+        "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "resources": []
+    };
+    
+    flatNodes.forEach(node => {
+        let resource = {
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2021-04-01",
+            "name": node.safeId,
+            "properties": {
+                "displayName": node.name
+            }
+        };
+        if (node.parentId) {
+            resource.properties.details = {
+                "parent": {
+                    "id": `[tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')]`
+                }
+            };
+            resource.dependsOn = [
+                `[tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')]`
+            ];
+        }
+        code.resources.push(resource);
+
+        if (node.subscriptions && node.subscriptions.length > 0) {
+            node.subscriptions.forEach((sub, _index) => {
+                code.resources.push({
+                    "type": "Microsoft.Management/managementGroups/subscriptions",
+                    "apiVersion": "2021-04-01",
+                    "name": `[concat('${node.safeId}', '/', '${sub.name}')]`,
+                    "dependsOn": [
+                        `[tenantResourceId('Microsoft.Management/managementGroups', '${node.safeId}')]`
+                    ]
+                });
+            });
+        }
+    });
+    
+    return JSON.stringify(code, null, 2);
+}
 
 export default function TopologyCodeGenerator({ topology }) {
     const [format, setFormat] = useState('bicep');
     const [copied, setCopied] = useState(false);
-
-    // Flatten tree into an array of { id, name, parentId, subscriptions }
-    const flattenTopology = useCallback((nodes, parentId = null) => {
-        let result = [];
-        nodes.forEach(node => {
-            // Generate a safe identifier for code (alphanumeric and underscores)
-            const safeId = node.id.replace(/[^a-zA-Z0-9]/g, '_');
-            result.push({
-                id: node.id,
-                safeId: safeId,
-                name: node.name,
-                parentId: parentId,
-                subscriptions: node.subscriptions || []
-            });
-            if (node.children && node.children.length > 0) {
-                result = result.concat(flattenTopology(node.children, safeId));
-            }
-        });
-        return result;
-    }, []);
-
-    const generateBicep = (flatNodes) => {
-        let code = `targetScope = 'tenant'\n\n`;
-        
-        flatNodes.forEach(node => {
-            code += `resource mg_${node.safeId} 'Microsoft.Management/managementGroups@2021-04-01' = {\n`;
-            code += `  name: '${node.safeId}'\n`;
-            code += `  properties: {\n`;
-            code += `    displayName: '${node.name}'\n`;
-            if (node.parentId) {
-                code += `    details: {\n`;
-                code += `      parent: {\n`;
-                code += `        id: tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')\n`;
-                code += `      }\n`;
-                code += `    }\n`;
-            }
-            code += `  }\n`;
-            code += `}\n\n`;
-
-            if (node.subscriptions && node.subscriptions.length > 0) {
-                node.subscriptions.forEach((sub, _index) => {
-                    const subSafeId = sub.id.replace(/[^a-zA-Z0-9]/g, '_');
-                    code += `resource sub_${subSafeId} 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = {\n`;
-                    code += `  parent: mg_${node.safeId}\n`;
-                    code += `  name: '${sub.name}'\n`;
-                    code += `}\n\n`;
-                });
-            }
-        });
-        
-        return code.trim();
-    };
-
-    const generateTerraform = (flatNodes) => {
-        let code = `provider "azurerm" {\n  features {}\n}\n\n`;
-        
-        flatNodes.forEach(node => {
-            code += `resource "azurerm_management_group" "${node.safeId}" {\n`;
-            code += `  name         = "${node.safeId}"\n`;
-            code += `  display_name = "${node.name}"\n`;
-            if (node.parentId) {
-                code += `  parent_management_group_id = azurerm_management_group.${node.parentId}.id\n`;
-            }
-            code += `}\n\n`;
-
-            if (node.subscriptions && node.subscriptions.length > 0) {
-                node.subscriptions.forEach((sub, _index) => {
-                    const subSafeId = sub.id.replace(/[^a-zA-Z0-9]/g, '_');
-                    code += `data "azurerm_subscription" "sub_${subSafeId}" {\n`;
-                    code += `  subscription_id = "${sub.name}"\n`;
-                    code += `}\n\n`;
-                    code += `resource "azurerm_management_group_subscription_association" "assoc_${subSafeId}" {\n`;
-                    code += `  management_group_id = azurerm_management_group.${node.safeId}.id\n`;
-                    code += `  subscription_id     = data.azurerm_subscription.sub_${subSafeId}.id\n`;
-                    code += `}\n\n`;
-                });
-            }
-        });
-        
-        return code.trim();
-    };
-
-    const generateArm = (flatNodes) => {
-        let code = {
-            "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
-            "contentVersion": "1.0.0.0",
-            "resources": []
-        };
-        
-        flatNodes.forEach(node => {
-            let resource = {
-                "type": "Microsoft.Management/managementGroups",
-                "apiVersion": "2021-04-01",
-                "name": node.safeId,
-                "properties": {
-                    "displayName": node.name
-                }
-            };
-            if (node.parentId) {
-                resource.properties.details = {
-                    "parent": {
-                        "id": `[tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')]`
-                    }
-                };
-                resource.dependsOn = [
-                    `[tenantResourceId('Microsoft.Management/managementGroups', '${node.parentId}')]`
-                ];
-            }
-            code.resources.push(resource);
-
-            if (node.subscriptions && node.subscriptions.length > 0) {
-                node.subscriptions.forEach((sub, _index) => {
-                    code.resources.push({
-                        "type": "Microsoft.Management/managementGroups/subscriptions",
-                        "apiVersion": "2021-04-01",
-                        "name": `[concat('${node.safeId}', '/', '${sub.name}')]`,
-                        "dependsOn": [
-                            `[tenantResourceId('Microsoft.Management/managementGroups', '${node.safeId}')]`
-                        ]
-                    });
-                });
-            }
-        });
-        
-        return JSON.stringify(code, null, 2);
-    };
 
     const generatedCode = useMemo(() => {
         const flatNodes = flattenTopology(topology);
@@ -138,7 +141,7 @@ export default function TopologyCodeGenerator({ topology }) {
         if (format === 'terraform') return generateTerraform(flatNodes);
         if (format === 'arm') return generateArm(flatNodes);
         return '';
-    }, [topology, format, flattenTopology]);
+    }, [topology, format]);
 
     const docsUrl = useMemo(() => {
         if (format === 'terraform') return 'https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group';

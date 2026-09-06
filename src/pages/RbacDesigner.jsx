@@ -1,7 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Info, Edit3, ChevronDown, ChevronUp, ExternalLink, RotateCcw, Sparkles, Settings2 } from 'lucide-react';
+import { Info, Edit3, ChevronDown, ChevronUp, ExternalLink, Sparkles, Settings2 } from 'lucide-react';
 import PermissionsSelector from '../components/rbac/PermissionsSelector';
 import RbacPromptBar from '../components/ai/RbacPromptBar';
+import ResetButton from '../components/shared/ResetButton';
 import { RBAC_ROLE_TEMPLATES } from '../data/rbacData';
 
 export default function RbacDesignerPage() {
@@ -191,15 +192,12 @@ export default function RbacDesignerPage() {
                                 <Edit3 className="w-4 h-4 text-fluent-brand-fg" />
                                 <h3 className="text-[14px] font-semibold text-fluent-fg-primary">Role Properties</h3>
                             </div>
-                            <button
-                                type="button"
+                            <ResetButton
                                 onClick={() => applyTemplate('clear')}
-                                className="text-[12px] flex items-center gap-1.5 text-fluent-fg-secondary hover:text-fluent-state-danger font-medium px-2 py-1 rounded transition-colors"
                                 title="Reset all role properties"
                             >
-                                <RotateCcw className="w-3.5 h-3.5" />
-                                Clear Fields
-                            </button>
+                                Reset Role
+                            </ResetButton>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

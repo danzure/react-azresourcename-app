@@ -145,7 +145,7 @@ export default function App() {
                 {/* Mobile backdrop overlay */}
                 {isMobile && isMobileNavOpen && (
                     <div 
-                        className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 pt-[48px]"
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in transition-opacity duration-200 ease-in-out pt-[48px]"
                         onClick={handleCloseMobileNav}
                         aria-hidden="true"
                     />

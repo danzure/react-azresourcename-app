@@ -191,7 +191,7 @@ export default function ResourceNamingPage() {
     }, [setWorkload, setEnvValue, setRegionValue, setInstance, setOrgPrefix, setNamingOrder, setShowOrg, setActiveCategory]);
 
     return (
-        <div className="max-w-[1600px] w-full min-w-0 mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1 flex flex-col gap-4 sm:gap-5 pb-12">
+        <div className="max-w-[1600px] w-full min-w-0 mx-auto px-3 sm:px-6 pt-4 sm:pt-6 animate-fade-in flex-1 flex flex-col gap-4 sm:gap-5 pb-12">
             
             {/* Header */}
             <div className="flex flex-col gap-3 mb-1">
@@ -229,7 +229,7 @@ export default function ResourceNamingPage() {
                     </div>
                         
                     {isGuidanceExpanded && (
-                        <div className="mt-3 flex flex-col gap-3 text-[13px] text-fluent-info-text dark:text-fluent-fg-secondary cursor-default" onClick={(e) => e.stopPropagation()}>
+                        <div className="mt-3 flex flex-col gap-3 text-[13px] text-fluent-info-text dark:text-fluent-fg-secondary cursor-default animate-fade-in" onClick={(e) => e.stopPropagation()}>
                             <p>
                                 This tool generates Azure resource names aligned with Microsoft's <a href="https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming" target="_blank" rel="noopener noreferrer" className="text-fluent-brand-fg hover:underline inline-flex items-center gap-0.5 font-medium">Cloud Adoption Framework (CAF) <ExternalLink className="w-3 h-3 ml-0.5" /></a> naming conventions.
                             </p>

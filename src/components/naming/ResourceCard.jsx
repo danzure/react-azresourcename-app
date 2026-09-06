@@ -62,7 +62,7 @@ function ResourceCard({ id, resource, genName, isCopied, isExpanded, onCopy, onT
         <div
             id={id}
             onClick={() => onToggle(resource.name, isExpanded)}
-            className={`group relative flex flex-col min-w-0 rounded-lg border cursor-pointer transition-all duration-300 h-full ${isExpanded ? 'ring-2 ring-fluent-brand-bg shadow-depth border-transparent dark:border-transparent' : `hover:shadow-depth shadow-soft ${hasErrors ? 'hover:border-fluent-state-danger' : hasWarnings ? 'hover:border-fluent-cat-orange-fg' : 'hover:border-fluent-stroke-strong'}`} bg-fluent-bg-card ${hasErrors ? 'border-fluent-state-danger' : hasWarnings ? 'border-fluent-cat-orange-fg' : 'border-fluent-stroke-subtle'}`}
+            className={`group relative flex flex-col min-w-0 rounded-lg border cursor-pointer transition-all duration-200 ease-in-out h-full ${isExpanded ? 'ring-2 ring-fluent-brand-bg shadow-depth border-transparent dark:border-transparent' : `hover:shadow-depth shadow-soft ${hasErrors ? 'hover:border-fluent-state-danger' : hasWarnings ? 'hover:border-fluent-cat-orange-fg' : 'hover:border-fluent-stroke-strong'}`} bg-fluent-bg-card ${hasErrors ? 'border-fluent-state-danger' : hasWarnings ? 'border-fluent-cat-orange-fg' : 'border-fluent-stroke-subtle'}`}
         >
             <div className="p-3 sm:p-4 flex flex-col h-full gap-3 min-w-0">
                 <div className="flex items-start justify-between gap-3 min-w-0">

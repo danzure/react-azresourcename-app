@@ -30,6 +30,7 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const [openUpward, setOpenUpward] = useState(false);
     const wrapperRef = useRef(null);
     const listboxRef = useRef(null);
     const searchInputRef = useRef(null);
@@ -55,11 +56,24 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
         setHighlightedIndex(-1);
     }, [search]);
 
-    // Reset highlight when dropdown opens/closes
+    // Reset highlight and compute upward placement when dropdown opens/closes
     useEffect(() => {
         if (!isOpen) {
             setHighlightedIndex(-1);
             setSearch('');
+            setOpenUpward(false);
+        } else {
+            if (wrapperRef.current) {
+                const rect = wrapperRef.current.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceAbove = rect.top;
+                const estimatedMenuHeight = 320;
+                if (spaceBelow < estimatedMenuHeight && spaceAbove > spaceBelow) {
+                    setOpenUpward(true);
+                } else {
+                    setOpenUpward(false);
+                }
+            }
         }
     }, [isOpen]);
 
@@ -147,12 +161,13 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
         : undefined;
 
     // Shared dropdown panel renderer
-    const renderDropdown = (fontSize) => (
+    // Shared dropdown panel renderer
+    const renderDropdown = () => (
         <div
-            className="absolute top-[100%] left-0 right-0 z-[100] shadow-flyout border rounded overflow-hidden mt-1 bg-fluent-bg-card border-fluent-stroke-subtle animate-fade-in"
+            className={`absolute ${openUpward ? 'bottom-[100%] mb-1' : 'top-[100%] mt-1'} left-0 right-0 z-[100] shadow-flyout border rounded overflow-hidden bg-fluent-bg-card border-fluent-stroke-subtle animate-fade-in`}
             role="presentation"
         >
-            <div className="p-2 border-b border-opacity-10 border-current">
+            <div className="p-2 border-b border-fluent-stroke-subtle">
                 <input
                     ref={searchInputRef}
                     autoFocus
@@ -161,7 +176,7 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
-                    className={`w-full px-2 py-1.5 text-[${fontSize}] border-b outline-none bg-transparent text-fluent-fg-primary border-fluent-stroke-subtle placeholder:text-fluent-fg-tertiary`}
+                    className={`w-full px-2 py-1.5 ${compact ? 'text-[13px]' : 'text-[14px]'} border-b outline-none bg-transparent text-fluent-fg-primary border-fluent-stroke-subtle placeholder:text-fluent-fg-tertiary`}
                     role="combobox"
                     aria-expanded={isOpen}
                     aria-controls={listboxId}
@@ -205,7 +220,7 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
                             data-highlighted={isHighlighted}
                             onClick={() => selectItem(item.value)}
                             onMouseEnter={() => setHighlightedIndex(selectableIdx)}
-                            className={`flex items-center justify-between px-3 py-2.5 text-[${fontSize}] cursor-pointer transition-colors ${
+                            className={`flex items-center justify-between px-3 py-2.5 ${compact ? 'text-[13px]' : 'text-[14px]'} cursor-pointer transition-colors ${
                                 isHighlighted
                                     ? 'bg-fluent-bg-hover text-fluent-fg-primary'
                                     : isSelected
@@ -225,7 +240,7 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
     // Compact mode: no label, standard height matching inputs
     if (compact) {
         return (
-            <div ref={wrapperRef} className="relative w-full">
+            <div ref={wrapperRef} className={`relative w-full ${isOpen ? 'z-50' : ''}`}>
                 <div
                     onClick={() => setIsOpen(!isOpen)}
                     onKeyDown={handleKeyDown}
@@ -244,13 +259,13 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
                     <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                 </div>
 
-                {isOpen && renderDropdown('13px')}
+                {isOpen && renderDropdown()}
             </div>
         );
     }
 
     return (
-        <div ref={wrapperRef} className="relative flex-1 group min-w-[200px] flex flex-col gap-2">
+        <div ref={wrapperRef} className={`relative flex-1 group min-w-[200px] flex flex-col gap-2 ${isOpen ? 'z-50' : ''}`}>
             <Tooltip content={description}>
                 <div className="flex items-center gap-1">
                     <label id={`${listboxId}-label`} className="block text-[14px] font-semibold cursor-help text-fluent-fg-primary">{label}</label>
@@ -275,7 +290,7 @@ export default function SearchableSelect({ items, value, onChange, label, placeh
                 </div>
             </Tooltip>
 
-            {isOpen && renderDropdown('14px')}
+            {isOpen && renderDropdown()}
         </div>
     );
 }

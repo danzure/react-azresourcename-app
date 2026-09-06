@@ -193,13 +193,30 @@ app.http('generateRbacRole', {
         context.log(`Http function processed request for url "${request.url}"`);
 
         try {
-            const body = await request.json();
-            const { prompt } = body;
-
-            if (!prompt) {
+            let body;
+            try {
+                body = await request.json();
+            } catch {
                 return {
                     status: 400,
-                    jsonBody: { error: 'Please pass a prompt in the request body' }
+                    jsonBody: { error: 'Invalid JSON payload in request body' }
+                };
+            }
+
+            const { prompt } = body || {};
+
+            if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
+                return {
+                    status: 400,
+                    jsonBody: { error: 'Please pass a valid text prompt in the request body' }
+                };
+            }
+
+            const sanitizedPrompt = prompt.trim();
+            if (sanitizedPrompt.length > 2000) {
+                return {
+                    status: 400,
+                    jsonBody: { error: 'Prompt must not exceed 2,000 characters' }
                 };
             }
 
@@ -213,7 +230,7 @@ app.http('generateRbacRole', {
                     status: 503,
                     jsonBody: {
                         error: 'AI Service Not Configured',
-                        details: 'Missing AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY, or AZURE_OPENAI_DEPLOYMENT_NAME.'
+                        details: 'Missing required Azure OpenAI configuration.'
                     }
                 };
             }
@@ -232,7 +249,7 @@ app.http('generateRbacRole', {
                         model: deploymentName,
                         messages: [
                             { role: 'system', content: SYSTEM_PROMPT },
-                            { role: 'user', content: prompt }
+                            { role: 'user', content: sanitizedPrompt }
                         ],
                         response_format: formatOption,
                         temperature: 0.1
@@ -254,7 +271,7 @@ app.http('generateRbacRole', {
                 context.error(`Foundry API error (${response.status}): ${errorBody}`);
                 return {
                     status: 502,
-                    jsonBody: { error: 'AI service error', details: errorBody }
+                    jsonBody: { error: 'AI service temporarily unavailable. Please try again later.' }
                 };
             }
 
@@ -276,7 +293,7 @@ app.http('generateRbacRole', {
             context.error('Error processing request:', error);
             return {
                 status: 500,
-                jsonBody: { error: 'Internal Server Error', details: error.message }
+                jsonBody: { error: 'Internal Server Error' }
             };
         }
     }

@@ -94,7 +94,7 @@ export default function ConditionalAccessPage() {
 
 
     return (
-        <div className="flex flex-col min-w-0 w-full">
+        <div className="flex flex-col min-w-0 w-full animate-fade-in">
             <div className="max-w-[1600px] w-full min-w-0 mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1 flex flex-col">
                 <div className="mb-8">
                     <h1 className="text-[20px] sm:text-[24px] font-semibold text-fluent-fg-primary mb-2">

@@ -43,8 +43,10 @@ export function generateConditionalAccessTerraform(policyName, persona, resource
     let platformsInclude = '["all"]';
     if (platform !== 'AnyPlatform') platformsInclude = `["${platform.toLowerCase()}"]`;
 
+    const escapeTf = (str) => (str || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
     return `resource "azurerm_conditional_access_policy" "generated_policy" {
-  name  = "${policyName}"
+  name  = "${escapeTf(policyName)}"
   state = "reportOnly" # Recommended baseline
 
   conditions {

@@ -330,7 +330,7 @@ export default function PermissionsSelector({
                                 role="tab"
                                 aria-selected={activeTab === 'permissions'}
                                 onClick={() => setActiveTab('permissions')}
-                                className={`flex items-center gap-1.5 px-3 h-[28px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out ${
+                                className={`flex items-center gap-1.5 px-3 h-[28px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out active:scale-95 ${
                                     activeTab === 'permissions'
                                         ? 'bg-fluent-info-bg text-fluent-brand-fg font-semibold shadow-sm'
                                         : 'bg-transparent text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'
@@ -347,7 +347,7 @@ export default function PermissionsSelector({
                                 role="tab"
                                 aria-selected={activeTab === 'json'}
                                 onClick={() => setActiveTab('json')}
-                                className={`flex items-center gap-1.5 px-3 h-[28px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out ${
+                                className={`flex items-center gap-1.5 px-3 h-[28px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out active:scale-95 ${
                                     activeTab === 'json'
                                         ? 'bg-fluent-info-bg text-fluent-brand-fg font-semibold shadow-sm'
                                         : 'bg-transparent text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'
@@ -395,7 +395,7 @@ export default function PermissionsSelector({
 
                     {/* Tab 1: Selected Permissions Content */}
                     {activeTab === 'permissions' && (
-                        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-4 rounded-b-lg">
+                        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-4 rounded-b-lg animate-fade-in">
                             {/* Actions section */}
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between border-b border-fluent-stroke-subtle pb-1">
@@ -474,7 +474,7 @@ export default function PermissionsSelector({
 
                     {/* Tab 2: Role JSON Output Content */}
                     {activeTab === 'json' && (
-                        <div className="flex-1 bg-[#1E1E1E] w-full relative flex flex-col min-h-0">
+                        <div className="flex-1 bg-[#1E1E1E] w-full relative flex flex-col min-h-0 animate-fade-in">
                             <pre className="flex-1 text-[13px] leading-relaxed font-mono overflow-auto p-4 text-[#D4D4D4] m-0 select-all">
                                 <code>{generatedJson}</code>
                             </pre>

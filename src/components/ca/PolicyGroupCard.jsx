@@ -360,7 +360,7 @@ function PolicyGroupCard({ requirement, policies, copiedId, handleCopy, globalEx
 
             {/* Expanded Template / Script View */}
             {isExpanded && activePolicy.settings && (
-                <div className="border-t border-fluent-stroke-subtle bg-fluent-bg-canvas rounded-b-lg p-4 sm:p-5 flex flex-col gap-4">
+                <div className="border-t border-fluent-stroke-subtle bg-fluent-bg-canvas rounded-b-lg p-4 sm:p-5 flex flex-col gap-4 animate-fade-in">
                     
                     {/* View Switcher Tabs Bar */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-fluent-stroke-subtle">

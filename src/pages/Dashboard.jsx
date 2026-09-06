@@ -165,7 +165,7 @@ export default function DashboardPage() {
                                 rounded-xl p-4
                                 border border-fluent-stroke-subtle shadow-soft dark:shadow-none
                                 hover:shadow-depth hover:border-fluent-stroke-strong 
-                                transition-all duration-300 ease-out
+                                transition-all duration-200 ease-in-out
                                 active:scale-[0.98]
                                 flex flex-col shrink-0 snap-start
                                 w-[80vw] sm:w-[310px] lg:w-[340px]
@@ -175,24 +175,24 @@ export default function DashboardPage() {
                             `}
                         >
                             {/* Ambient Hover Glow */}
-                            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[200px] h-[200px] bg-fluent-brand-bg rounded-full blur-[50px] opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500 pointer-events-none" />
+                            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[200px] h-[200px] bg-fluent-brand-bg rounded-full blur-[50px] opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-200 pointer-events-none" />
 
                             <div className="relative z-10 flex flex-col h-full">
                                 <div className="flex items-start justify-between mb-2.5">
                                     <img
                                         src={tool.iconUrl}
                                         alt={`${tool.title} icon`}
-                                        className="w-9 h-9 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500 ease-out"
+                                        className="w-9 h-9 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 ease-in-out"
                                     />
                                     <div className="flex gap-2">
                                         {tool.isNew && (
-                                            <span className="inline-flex items-center gap-1.5 bg-fluent-brand-bg text-white text-[11px] px-2.5 py-0.5 rounded-[4px] font-medium shadow-sm transition-colors duration-300">
+                                            <span className="inline-flex items-center gap-1.5 bg-fluent-brand-bg text-white text-[11px] px-2.5 py-0.5 rounded-[4px] font-medium shadow-sm transition-colors duration-200">
                                                 <Star className="w-3 h-3 fill-current" />
                                                 New
                                             </span>
                                         )}
                                         {tool.hasAi && (
-                                            <span className="inline-flex items-center gap-1.5 bg-fluent-bg-card border border-fluent-stroke-subtle text-fluent-brand-fg text-[11px] px-2.5 py-0.5 rounded-[4px] font-medium shadow-sm group-hover:border-fluent-brand-bg/30 transition-colors duration-300">
+                                            <span className="inline-flex items-center gap-1.5 bg-fluent-bg-card border border-fluent-stroke-subtle text-fluent-brand-fg text-[11px] px-2.5 py-0.5 rounded-[4px] font-medium shadow-sm group-hover:border-fluent-brand-bg/30 transition-colors duration-200">
                                                 <Sparkles className="w-3 h-3" />
                                                 AI Powered
                                             </span>
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                                 </div>
 
                                 <div className="flex-1">
-                                    <h2 className="text-[16px] font-bold text-fluent-fg-primary mb-1 group-hover:text-fluent-brand-fg transition-colors duration-300">
+                                    <h2 className="text-[16px] font-bold text-fluent-fg-primary mb-1 group-hover:text-fluent-brand-fg transition-colors duration-200">
                                         {tool.title}
                                     </h2>
                                     <p className="text-[13px] text-fluent-fg-secondary leading-relaxed">
@@ -209,9 +209,9 @@ export default function DashboardPage() {
                                     </p>
                                 </div>
 
-                                <div className="mt-2.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-fluent-brand-fg opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                                <div className="mt-2.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-fluent-brand-fg opacity-80 group-hover:opacity-100 transition-opacity duration-200">
                                     <span>Get started</span>
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300 ease-out" />
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-in-out" />
                                 </div>
                             </div>
                         </div>

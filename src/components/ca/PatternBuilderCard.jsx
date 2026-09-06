@@ -1,8 +1,9 @@
 import { useState, useMemo, memo, useCallback } from 'react';
-import { Copy, Check, Edit3, Eye, Info, ChevronDown, ChevronUp, ExternalLink, Code2, Terminal, FileText, RefreshCw, Users, Lock, Shield, Sliders } from 'lucide-react';
+import { Copy, Check, Edit3, Eye, Info, ChevronDown, ChevronUp, ExternalLink, Code2, Terminal, FileText, Users, Lock, Shield, Sliders } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { generateConditionalAccessTerraform, generateConditionalAccessJSON } from '../../utils/caExportUtils';
 import FluentDropdown from '../shared/FluentDropdown';
+import ResetButton from '../shared/ResetButton';
 
 const ALPHANUMERIC_REGEX = /[^a-zA-Z0-9-]/g;
 
@@ -126,11 +127,7 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
         setCustomResource('');
         setPlatform('AnyPlatform');
         setAction('RequireMFA');
-        setCustomAction('');
     }, []);
-
-    const activeResourceLabel = resource === 'Custom' ? (customResource || 'Custom') : resource;
-    const activeActionLabel = action === 'Custom' ? (customAction || 'Custom') : action;
 
     return (
         <div className="flex flex-col gap-3">
@@ -172,7 +169,7 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
             </div>
 
             {/* Main Pattern Builder Card */}
-            <div className="relative rounded-lg border shadow-soft bg-fluent-bg-card dark:bg-fluent-bg-subtle border-fluent-stroke-subtle w-full flex flex-col">
+            <div className="relative z-40 rounded-lg border shadow-soft bg-fluent-bg-card dark:bg-fluent-bg-subtle border-fluent-stroke-subtle w-full flex flex-col">
                 
                 {/* Header with Title, Tabs, and Reset Defaults */}
                 <div className="p-4 sm:p-5 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-fluent-stroke-subtle">
@@ -192,51 +189,49 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
 
                     <div className="flex items-center gap-2.5 self-start md:self-auto flex-wrap">
                         {/* Tab Switcher */}
-                        <div className="flex shrink-0 bg-fluent-bg-canvas border border-fluent-stroke-subtle rounded-md p-0.5" role="tablist">
+                        <div className="h-[32px] flex items-center shrink-0 bg-fluent-bg-canvas border border-fluent-stroke-subtle rounded-[4px] p-0.5" role="tablist">
                             <button
                                 type="button"
                                 role="tab"
                                 aria-selected={activeTab === 'builder'}
                                 onClick={() => setActiveTab('builder')}
-                                className={`text-[12px] px-3 py-1.5 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'builder' 
-                                    ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm border border-fluent-stroke-subtle' 
-                                    : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover border border-transparent'}`}
+                                className={`h-full px-3 text-[12px] font-medium rounded-[2px] transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'builder' 
+                                    ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm font-semibold' 
+                                    : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'}`}
                             >
-                                <Sliders className="w-3.5 h-3.5" />
-                                Policy Builder
+                                <Sliders className="w-3.5 h-3.5 shrink-0" />
+                                <span>Policy Builder</span>
                             </button>
                             <button
                                 type="button"
                                 role="tab"
                                 aria-selected={activeTab === 'iac'}
                                 onClick={() => setActiveTab('iac')}
-                                className={`text-[12px] px-3 py-1.5 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'iac' 
-                                    ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm border border-fluent-stroke-subtle' 
-                                    : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover border border-transparent'}`}
+                                className={`h-full px-3 text-[12px] font-medium rounded-[2px] transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${activeTab === 'iac' 
+                                    ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm font-semibold' 
+                                    : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'}`}
                             >
-                                <Code2 className="w-3.5 h-3.5" />
-                                IaC Template
+                                <Code2 className="w-3.5 h-3.5 shrink-0" />
+                                <span>IaC Template</span>
                             </button>
                         </div>
 
                         {/* Reset Defaults button */}
                         {activeTab === 'builder' && (
-                            <button
-                                type="button"
+                            <ResetButton
                                 onClick={handleResetDefaults}
-                                className="text-[12px] flex items-center gap-1.5 text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover font-medium px-2.5 h-[30px] rounded-[4px] border border-fluent-stroke-subtle hover:border-fluent-stroke-strong transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50"
                                 title="Reset all builder inputs to defaults"
                             >
-                                <RefreshCw className="w-3.5 h-3.5 text-fluent-brand-fg" />
-                                <span>Reset Defaults</span>
-                            </button>
+                                Reset Defaults
+                            </ResetButton>
                         )}
                     </div>
                 </div>
 
-                {/* Prefix & CAF Segment Breakdown Strip */}
-                <div className="px-4 sm:px-5 py-3 border-b border-fluent-stroke-subtle bg-fluent-bg-canvas/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[13px]">
-                    <div className="flex items-center gap-2.5">
+                {/* Unified Policy Prefix & Live Preview Strip */}
+                <div className="px-4 sm:px-5 py-3 border-b border-fluent-stroke-subtle bg-fluent-bg-canvas/50 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[13px]">
+                    {/* Policy Prefix configuration */}
+                    <div className="flex items-center gap-2.5 shrink-0">
                         <label htmlFor="policy-prefix-input" className="text-[12px] font-semibold text-fluent-fg-primary whitespace-nowrap">
                             Policy Prefix:
                         </label>
@@ -247,25 +242,37 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
                             onChange={(e) => setPrefix(e.target.value.replace(ALPHANUMERIC_REGEX, ''))}
                             placeholder="CA"
                             maxLength={10}
-                            className="px-2.5 h-[30px] border rounded outline-none text-[13px] font-mono transition-colors duration-200 focus:border-fluent-brand-bg focus:ring-2 focus:ring-fluent-brand-bg/20 bg-fluent-bg-card text-fluent-fg-primary border-fluent-stroke-strong w-[72px] text-center placeholder:text-fluent-fg-tertiary"
+                            className="px-2.5 h-[32px] border rounded outline-none text-[13px] font-mono font-semibold transition-colors duration-200 focus:border-fluent-brand-bg focus:ring-2 focus:ring-fluent-brand-bg/20 bg-fluent-bg-card text-fluent-brand-fg border-fluent-stroke-strong w-[72px] text-center placeholder:text-fluent-fg-tertiary"
                             aria-label="Policy Prefix"
+                            title="Policy naming prefix (default: CA)"
                         />
-                        <span className="text-[11px] text-fluent-fg-tertiary hidden sm:inline">
-                            (Standard CAF identifier for Conditional Access)
+                        <span className="text-[11px] text-fluent-fg-tertiary hidden xl:inline">
+                            (Standard CAF identifier)
                         </span>
                     </div>
 
-                    {/* Real-time segment chips */}
-                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-fluent-fg-tertiary flex-wrap">
-                        <span className="px-1.5 py-0.5 rounded bg-fluent-bg-subtle text-fluent-brand-fg font-semibold">{prefix.trim() || 'CA'}</span>
-                        <span>-</span>
-                        <span className="px-1.5 py-0.5 rounded bg-fluent-bg-subtle text-fluent-fg-secondary">{persona}</span>
-                        <span>-</span>
-                        <span className="px-1.5 py-0.5 rounded bg-fluent-bg-subtle text-fluent-fg-secondary">{activeResourceLabel}</span>
-                        <span>-</span>
-                        <span className="px-1.5 py-0.5 rounded bg-fluent-bg-subtle text-fluent-fg-secondary">{platform}</span>
-                        <span>-</span>
-                        <span className="px-1.5 py-0.5 rounded bg-fluent-bg-subtle text-fluent-fg-secondary">{activeActionLabel}</span>
+                    {/* Live Generated Preview Snippet */}
+                    <div className="flex items-center gap-2.5 flex-1 min-w-0 md:justify-end">
+                        <div className="flex items-center gap-1.5 shrink-0 text-fluent-fg-tertiary">
+                            <Eye className="w-3.5 h-3.5 text-fluent-brand-fg" />
+                            <span className="text-[11px] font-semibold uppercase tracking-wider hidden sm:inline">Preview</span>
+                        </div>
+
+                        <div className="group/copy relative flex items-center gap-2 px-3 py-1.5 min-h-[32px] w-full md:w-auto md:min-w-[340px] max-w-full rounded-[4px] border bg-fluent-brand-bg/5 hover:bg-fluent-brand-bg/10 border-fluent-brand-bg/20 transition-all">
+                            <div className="flex-1 min-w-0 font-mono text-[13px] font-semibold text-fluent-brand-fg truncate select-all" title={generatedName}>
+                                {generatedName}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => handleCopy(generatedName, 'live-pill')}
+                                aria-label={copiedId === 'live-pill' ? 'Copied' : 'Copy name'}
+                                className={`shrink-0 flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-[4px] border text-[11px] font-medium transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg ${copiedId === 'live-pill' 
+                                    ? 'bg-[#f1faf1] dark:bg-[#1b2b1b] border-[#c6ebc9] dark:border-[#1e4620] text-[#107c10] dark:text-[#a3d4a3]' 
+                                    : 'bg-fluent-bg-card border-fluent-stroke-subtle text-fluent-fg-primary hover:bg-fluent-bg-hover hover:border-fluent-stroke-strong'}`}
+                            >
+                                {copiedId === 'live-pill' ? <><Check className="w-3.5 h-3.5" /> <span>Copied</span></> : <><Copy className="w-3.5 h-3.5" /> <span>Copy Name</span></>}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -496,39 +503,39 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
 
                             <div className="flex items-center gap-2.5 flex-wrap">
                                 {/* Format Selector */}
-                                <div className="flex shrink-0 bg-fluent-bg-canvas border border-fluent-stroke-subtle rounded-md p-0.5" role="tablist">
+                                <div className="h-[32px] flex items-center shrink-0 bg-fluent-bg-canvas border border-fluent-stroke-subtle rounded-[4px] p-0.5" role="tablist">
                                     <button
                                         type="button"
                                         role="tab"
                                         aria-selected={exportFormat === 'terraform'}
                                         onClick={() => setExportFormat('terraform')}
-                                        className={`text-[12px] px-3 py-1 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${exportFormat === 'terraform' 
-                                            ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm border border-fluent-stroke-subtle' 
-                                            : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover border border-transparent'}`}
+                                        className={`h-full px-3 text-[12px] font-medium rounded-[2px] transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${exportFormat === 'terraform' 
+                                            ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm font-semibold' 
+                                            : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'}`}
                                     >
-                                        <Terminal className="w-3.5 h-3.5" />
-                                        Terraform
+                                        <Terminal className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Terraform</span>
                                     </button>
                                     <button
                                         type="button"
                                         role="tab"
                                         aria-selected={exportFormat === 'json'}
                                         onClick={() => setExportFormat('json')}
-                                        className={`text-[12px] px-3 py-1 font-medium rounded-sm transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${exportFormat === 'json' 
-                                            ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm border border-fluent-stroke-subtle' 
-                                            : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover border border-transparent'}`}
+                                        className={`h-full px-3 text-[12px] font-medium rounded-[2px] transition-all duration-200 ease-in-out active:scale-95 inline-flex items-center justify-center gap-1.5 ${exportFormat === 'json' 
+                                            ? 'bg-fluent-bg-card text-fluent-brand-fg shadow-sm font-semibold' 
+                                            : 'text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'}`}
                                     >
-                                        <FileText className="w-3.5 h-3.5" />
-                                        JSON Payload
+                                        <FileText className="w-3.5 h-3.5 shrink-0" />
+                                        <span>JSON Payload</span>
                                     </button>
                                 </div>
 
                                 <button
                                     type="button"
                                     onClick={handleCopyIaC}
-                                    className={`px-3 h-[30px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out inline-flex items-center justify-center gap-1.5 border active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50 ${exportCopied 
+                                    className={`px-3 h-[32px] rounded-[4px] text-[12px] font-medium transition-all duration-200 ease-in-out inline-flex items-center justify-center gap-1.5 border active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg/50 ${exportCopied 
                                         ? 'bg-[#f1faf1] dark:bg-[#1b2b1b] border-[#c6ebc9] dark:border-[#1e4620] text-[#107c10] dark:text-[#a3d4a3]' 
-                                        : 'bg-fluent-bg-card border-fluent-stroke-strong text-fluent-fg-secondary hover:border-fluent-fg-primary hover:text-fluent-fg-primary'}`}
+                                        : 'bg-fluent-bg-card border-fluent-stroke-subtle hover:border-fluent-stroke-strong text-fluent-fg-secondary hover:text-fluent-fg-primary hover:bg-fluent-bg-hover'}`}
                                     title="Copy deployment code"
                                 >
                                     {exportCopied ? <Check className="w-3.5 h-3.5 shrink-0" /> : <Copy className="w-3.5 h-3.5 shrink-0" />}
@@ -545,30 +552,6 @@ function PatternBuilderCard({ copiedId, handleCopy }) {
                         </div>
                     </div>
                 )}
-
-                {/* Live Preview Bar (Anchored at the bottom) */}
-                <div className="relative z-10 px-4 sm:px-5 py-3 flex items-center gap-3 border-t border-fluent-stroke-subtle bg-fluent-bg-canvas dark:bg-fluent-bg-subtle rounded-b-lg">
-                    <div className="flex items-center gap-2 shrink-0">
-                        <Eye className="w-4 h-4 text-fluent-brand-fg" />
-                        <span className="text-[12px] font-semibold text-fluent-fg-tertiary uppercase tracking-wider">Preview</span>
-                    </div>
-                    
-                    <div className="group/copy relative flex flex-1 items-center gap-2 px-3 py-1.5 min-h-[34px] min-w-0 rounded-[4px] border bg-fluent-brand-bg/5 hover:bg-fluent-brand-bg/10 border-fluent-brand-bg/20 transition-all">
-                        <div className="flex-1 min-w-0 font-mono text-[13px] sm:text-[14px] font-semibold text-fluent-brand-fg truncate pr-24 select-all" title={generatedName}>
-                            {generatedName}
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => handleCopy(generatedName, 'live-pill')}
-                            aria-label={copiedId === 'live-pill' ? 'Copied' : 'Copy name'}
-                            className={`absolute right-1.5 top-1/2 -translate-y-1/2 shrink-0 flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-[4px] border text-[11px] font-medium transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-fluent-brand-bg z-10 ${copiedId === 'live-pill' 
-                                ? 'bg-[#f1faf1] dark:bg-[#1b2b1b] border-[#c6ebc9] dark:border-[#1e4620] text-[#107c10] dark:text-[#a3d4a3]' 
-                                : 'bg-fluent-bg-card border-fluent-stroke-subtle text-fluent-fg-primary hover:bg-fluent-bg-hover hover:border-fluent-stroke-strong'}`}
-                        >
-                            {copiedId === 'live-pill' ? <><Check className="w-3.5 h-3.5" /> <span>Copied</span></> : <><Copy className="w-3.5 h-3.5" /> <span>Copy Name</span></>}
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     );
